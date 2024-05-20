@@ -1,0 +1,17 @@
+node_modules/
+.DS_Store
+.env
+.idea/
+.vscode/
+dist/
+build/
+*.log
+*.tmp
+*.swp
+*.bak
+*.orig
+*.sass-cache/
+*.sublime-project
+*.sublime-workspace
+*.tmproj
+*.tmignore

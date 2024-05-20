@@ -1,0 +1,30 @@
+{
+  "name": "ai-cli",
+  "version": "0.1.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "keywords": [
+    "jsonscript",
+    "script",
+    "execution",
+    "commands",
+    "file-operations",
+    "ai",
+    "artificial intelligence",
+    "cli"
+  ],
+  "author": "Jason Jacobs <rootedbox@icloud.com>",
+  "license": "MIT",
+  "dependencies": {
+    "inquirer": "^9.2.22",
+    "jsonscriptlib": "^0.1.0",
+    "ollama": "^0.5.1",
+    "openai": "^4.47.1"
+  },
+  "devDependencies": {},
+  "description": ""
+}
