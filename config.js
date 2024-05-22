@@ -15,6 +15,8 @@ const defaultConfig = {
   ollamaModel: "",
   chatgptApiKey: "",
   chatgptModel: "",
+  showExecutionDescription: true,
+  showExecutionPlan: true,
 };
 
 function loadConfig() {
@@ -22,7 +24,7 @@ function loadConfig() {
     const configFile = fs.readFileSync(configPath);
     return JSON.parse(configFile);
   } else {
-    return null;
+    return defaultConfig;
   }
 }
 
@@ -74,6 +76,8 @@ async function configure() {
   }
 
   config.aiService = aiService.aiService;
+  config.showExecutionDescription = true;
+  config.showExecutionPlan = true;
 
   await saveConfig(config);
   return config;
