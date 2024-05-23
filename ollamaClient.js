@@ -1,17 +1,26 @@
 import { Ollama } from "ollama";
+import AIClient from "./aiClient.js";
 
-async function generateScript(prompt, ollamaUrl, ollamaModel) {
-  try {
-    const ollama = new Ollama({ host: ollamaUrl });
-    const response = await ollama.chat({
-      model: ollamaModel,
-      messages: [{ role: "user", content: prompt }],
-    });
+class OllamaClient extends AIClient {
+  constructor(baseURL, model, prompt) {
+    super(prompt);
+    this.client = createClient({ baseURL });
+    this.model = model;
+  }
 
-    return response.message.content;
-  } catch (error) {
-    throw new Error("Failed to generate script: " + error.message);
+  async generateScript(command) {
+    try {
+      const ollama = new Ollama({ host: ollamaUrl });
+      const response = await ollama.chat({
+        model: this.model,
+        messages: [{ role: "user", content: this.formatPrompt(command) }],
+      });
+
+      return response.message.content;
+    } catch (error) {
+      throw new Error("Failed to generate script: " + error.message);
+    }
   }
 }
 
-export { generateScript };
+export default OllamaClient;
