@@ -1,6 +1,7 @@
 import OpenAI from "openai";
 import AIClient from "./aiClient.js";
 
+
 class ChatGPTClient extends AIClient {
   constructor(apiKey, model, prompt) {
     super(prompt);

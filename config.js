@@ -7,7 +7,7 @@ import os from "os";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const configPath = path.join(os.homedir(), ".cmdlineai", "config.json");
+const configPath = path.join(os.homedir(), ".commandai", "config.json");
 
 const defaultConfig = {
   aiService: "",
@@ -24,7 +24,7 @@ function loadConfig() {
     const configFile = fs.readFileSync(configPath);
     return JSON.parse(configFile);
   } else {
-    return defaultConfig;
+    return null;
   }
 }
 

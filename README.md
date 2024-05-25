@@ -4,7 +4,7 @@
 
 ## Overview
 
-JSONScriptLib CLI is a command-line application designed to interact with AI services like Ollama and ChatGPT to generate and execute scripts based on user commands. The application can handle a variety of tasks by converting user inputs into structured JSONScripts, which are then executed step-by-step.
+AI CLI is a command-line application designed to interact with AI services like Ollama and ChatGPT to generate and execute scripts based on user commands. The application can handle a variety of tasks by converting user inputs into structured JSONScripts, which are then executed step-by-step.
 
 ## Features
 

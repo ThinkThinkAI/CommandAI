@@ -4,6 +4,7 @@ class AIClient {
   constructor(prompt) {
     this.prompt = prompt;
     this.osType = os.type(); // Get the operating system type
+    this.cwd = process.cwd();
   }
 
   async generateScript(command) {
@@ -11,8 +12,10 @@ class AIClient {
   }
 
   formatPrompt(command) {
-    return `I am at a command line on ${this.osType}. I need you to do the following ${command}  
-  Format your response in the following json format. only return the json object.
+    return `I am at a command line on ${this.osType} in the directory '${this.cwd}'. 
+    I would like to do following ${command}  
+  
+    Format your response in the following json format. only return the json object.
     1. Structure: The JSON is an array of objects. Each object represents a step in the process.
     2. Command Execution: Each object can have a "cmd" field, which contains a command to be executed in the terminal.
     3. File Creation: Each object can also have a "file" field. The "file" field contains an object with two properties:

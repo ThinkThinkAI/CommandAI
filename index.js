@@ -44,13 +44,13 @@ if (!command) {
 
     if (config.showExecutionDescription) {
       console.log(
-        "Execution Description:",
+        "Execution Description:\n",
         script.executionDescription.join("\n")
       );
     }
 
     if (config.showExecutionPlan) {
-      console.log("Execution Plan:", script.executionPlan.join("\n"));
+      console.log("Execution Plan:\n", script.executionPlan.join("\n"));
     }
 
     if (!config.showExecutionDescription && !config.showExecutionPlan) {
