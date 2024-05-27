@@ -6,6 +6,7 @@ import { loadConfig, configure } from "./config.js";
 import ChatGPTClient from "./chatgptClient.js";
 import OllamaClient from "./ollamaClient.js";
 import JSONScript from "jsonscriptlib";
+import logger from "./logger.js"; // Import the logger
 
 async function getCommandInput(defaultValue = "") {
   const { command } = await inquirer.prompt([
@@ -25,12 +26,15 @@ async function executeScript(script) {
 
   if (result.error) {
     console.error("Execution Error:", result.error);
+    logger.error({ error: result.error }, "Execution Error");
   } else {
     result.results.forEach((res) => {
       if (res.type === "cmd") {
         console.log(res.result);
+        logger.info({ cmdResult: res.result }, "Command Result");
       } else if (res.type === "file") {
         console.log(`File ${res.result}`);
+        logger.info({ fileResult: res.result }, "File Result");
       }
     });
   }
@@ -68,6 +72,14 @@ async function main() {
 
       spinner.succeed("Ready.");
       console.log();
+
+      // Log the command and the generated JSON script
+      logger.info({ command }, "Command logged");
+      logger.info(
+        { jsonScript: JSON.parse(jsonScript) },
+        "JSON Response logged"
+      );
+
       const script = new JSONScript(JSON.parse(jsonScript));
 
       if (config.showExecutionDescription) {
@@ -104,19 +116,20 @@ async function main() {
           break; // exit the loop after successful execution
         } else if (proceedOption === "no") {
           console.log("Execution aborted.");
+          logger.info("Execution aborted by user.");
           break; // exit the loop if user chooses to abort
         } else if (proceedOption === "newSolution") {
-          console.log("Generating a new solution with the same prompt...");
-          continue; // retry with the same command in the loop
+          command = await getCommandInput();
         }
       } else {
+        // If neither descriptions nor plans are shown, execute directly
         await executeScript(script);
-        break; // exit the loop after successful execution
+        break; // exit the loop
       }
     } catch (error) {
-      spinner.fail("Failed to generate script.");
-      console.error("An error occurred:", error.message);
-      break; // exit the loop if an error occurs
+      spinner.fail("An error occurred.");
+      console.error("Error:", error);
+      logger.error({ error }, "An error occurred during processing");
     }
   }
 }

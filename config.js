@@ -17,6 +17,7 @@ const defaultConfig = {
   chatgptModel: "",
   showExecutionDescription: true,
   showExecutionPlan: true,
+  enableLogging: false,
 };
 
 function loadConfig() {
@@ -75,9 +76,19 @@ async function configure() {
     ]);
   }
 
+  const loggingConfig = await inquirer.prompt([
+    {
+      type: "confirm",
+      name: "enableLogging",
+      message: "Do you want to enable logging?",
+      default: false,
+    },
+  ]);
+
   config.aiService = aiService.aiService;
   config.showExecutionDescription = true;
   config.showExecutionPlan = true;
+  config.enableLogging = loggingConfig.enableLogging; // Add to config
 
   await saveConfig(config);
   return config;
