@@ -22,7 +22,7 @@ if (!command) {
     config = await configure();
   }
 
-  const spinner = ora("Generating script...").start();
+  const spinner = ora("Thinking...").start();
 
   try {
     let jsonScript;
@@ -39,7 +39,8 @@ if (!command) {
       throw new Error("Invalid AI service configuration.");
     }
 
-    spinner.succeed("Script generated successfully.");
+    spinner.succeed("Ready.");
+    console.log();
     const script = new JSONScript(JSON.parse(jsonScript));
 
     if (config.showExecutionDescription) {
@@ -47,15 +48,17 @@ if (!command) {
         "Execution Description:\n",
         script.executionDescription.join("\n")
       );
+      console.log();
     }
 
     if (config.showExecutionPlan) {
       console.log("Execution Plan:\n", script.executionPlan.join("\n"));
+      console.log();
     }
 
     if (!config.showExecutionDescription && !config.showExecutionPlan) {
-      // Directly execute if both options are false
       const result = await script.execute();
+
       if (result.error) {
         console.error("Execution Error:", result.error);
       } else {
@@ -78,6 +81,7 @@ if (!command) {
       ]);
 
       if (proceed) {
+        console.log();
         const result = await script.execute();
         if (result.error) {
           console.error("Execution Error:", result.error);
