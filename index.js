@@ -6,7 +6,20 @@ import { loadConfig, configure } from "./config.js";
 import ChatGPTClient from "./chatgptClient.js";
 import OllamaClient from "./ollamaClient.js";
 import JSONScript from "jsonscriptlib";
-import logger from "./logger.js"; // Import the logger
+import logger from "./logger.js";
+import gradient from "gradient-string";
+import getStdin from "get-stdin";
+
+const raw_logo = [
+  " ██████╗ ██████╗ ███╗   ███╗███╗   ███╗ █████╗ ███╗   ██╗██████╗  █████╗ ██╗",
+  "██╔════╝██╔═══██╗████╗ ████║████╗ ████║██╔══██╗████╗  ██║██╔══██╗██╔══██╗██║",
+  "██║     ██║   ██║██╔████╔██║██╔████╔██║███████║██╔██╗ ██║██║  ██║███████║██║",
+  "██║     ██║   ██║██║╚██╔╝██║██║╚██╔╝██║██╔══██║██║╚██╗██║██║  ██║██╔══██║██║",
+  "╚██████╗╚██████╔╝██║ ╚═╝ ██║██║ ╚═╝ ██║██║  ██║██║ ╚████║██████╔╝██║  ██║██║",
+  " ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═════╝ ╚═╝  ╚═╝╚═╝",
+];
+
+const logo = gradient.atlas.multiline(raw_logo.join("\n"));
 
 async function getCommandInput(defaultValue = "") {
   const { command } = await inquirer.prompt([
@@ -42,18 +55,29 @@ async function executeScript(script) {
 
 async function main() {
   let command = process.argv.slice(2).join(" ");
+
   if (!command) {
-    command = await getCommandInput();
+    const stdinInput = await getStdin();
+    if (stdinInput.trim()) {
+      command = stdinInput.trim();
+    } else {
+      command = await getCommandInput();
+    }
   }
 
   let config = loadConfig();
   if (!config) {
-    console.log("No configuration found. Please configure the application.");
+    console.log();
+    console.log(logo);
+    console.log();
+
+    console.log(gradient.cristal("No configuration found."));
+    console.log();
     config = await configure();
   }
 
   while (true) {
-    const spinner = ora("Thinking...").start();
+    const spinner = ora(gradient.cristal("Thinking...")).start();
 
     try {
       let jsonScript;
@@ -70,10 +94,9 @@ async function main() {
         throw new Error("Invalid AI service configuration.");
       }
 
-      spinner.succeed("Ready.");
+      spinner.succeed(gradient.cristal("Ready."));
       console.log();
 
-      // Log the command and the generated JSON script
       logger.info({ command }, "Command logged");
       logger.info(
         { jsonScript: JSON.parse(jsonScript) },
@@ -83,19 +106,31 @@ async function main() {
       const script = new JSONScript(JSON.parse(jsonScript));
 
       if (config.showExecutionDescription) {
+        console.log(gradient.cristal("Execution Description:"));
         console.log(
-          "Execution Description:\n",
-          script.executionDescription.join("\n")
+          script.executionDescription
+            .map((line) => gradient.teen(line.trim()))
+            .join("\n")
         );
         console.log();
       }
 
       if (config.showExecutionPlan) {
-        console.log("Execution Plan:\n", script.executionPlan.join("\n"));
+        console.log(gradient.cristal("Execution Plan:"));
+        script.executionPlan.forEach((line) => {
+          line = line.trim(); // Strip the line before processing
+          if (line.startsWith("Create file:")) {
+            const coloredLine = line.replace(/^(Create file:)/, "");
+            console.log(
+              gradient.passion("Create file:") + gradient.teen(coloredLine)
+            );
+          } else {
+            console.log(gradient.teen(line));
+          }
+        });
         console.log();
       }
 
-      // Ask for confirmation to proceed with execution
       if (config.showExecutionDescription || config.showExecutionPlan) {
         const { proceedOption } = await inquirer.prompt([
           {
@@ -113,22 +148,19 @@ async function main() {
         if (proceedOption === "yes") {
           console.log();
           await executeScript(script);
-          break; // exit the loop after successful execution
+          break;
         } else if (proceedOption === "no") {
-          console.log("Execution aborted.");
           logger.info("Execution aborted by user.");
-          break; // exit the loop if user chooses to abort
+          break;
         } else if (proceedOption === "newSolution") {
           command = await getCommandInput();
         }
       } else {
-        // If neither descriptions nor plans are shown, execute directly
         await executeScript(script);
-        break; // exit the loop
+        break;
       }
     } catch (error) {
-      spinner.fail("An error occurred.");
-      console.error("Error:", error);
+      spinner.fail(gradient.morning("Bad Thoughts. Trying again."));
       logger.error({ error }, "An error occurred during processing");
     }
   }

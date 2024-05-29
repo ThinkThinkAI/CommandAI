@@ -1,7 +1,7 @@
 {
-  "name": "ai-cli",
-  "version": "0.1.0",
-  "description": "AI Command Line Interface",
+  "name": "command-ai",
+  "version": "0.1.1",
+  "description": "Command AI",
   "main": "index.js",
   "type": "module",
   "bin": {
@@ -24,6 +24,9 @@
   "author": "Jason Jacobs <rootedbox@icloud.com>",
   "license": "MIT",
   "dependencies": {
+    "chalk": "^5.3.0",
+    "get-stdin": "^9.0.0",
+    "gradient-string": "^2.0.2",
     "inquirer": "^9.2.22",
     "jsonscriptlib": "^0.1.0",
     "ollama": "^0.5.1",
