@@ -76,7 +76,10 @@ async function main() {
     config = await configure();
   }
 
-  while (true) {
+  const maxRetries = 3;
+  let retryCount = 0;
+
+  while (retryCount <= maxRetries) {
     const spinner = ora(gradient.cristal("Thinking...")).start();
 
     try {
@@ -152,16 +155,32 @@ async function main() {
         } else if (proceedOption === "no") {
           logger.info("Execution aborted by user.");
           break;
-        } 
+        }
       } else {
         await executeScript(script);
         break;
       }
     } catch (error) {
+      retryCount += 1;
       spinner.fail(gradient.morning("Bad Thoughts. Re-thinking."));
       logger.error({ error }, "An error occurred during processing");
+
+      if (retryCount > maxRetries) {
+        console.log(
+          gradient.cristal(
+            "The AI Service and Model is not working correctly for us."
+          )
+        );
+        console.log(
+          gradient.morning(
+            "Please try again or open a ticket on https://github.com/CommandAI/ai-cli/issues with your AI Service Provider and Model."
+          )
+        );
+        break;
+      }
     }
   }
 }
+
 
 main();
