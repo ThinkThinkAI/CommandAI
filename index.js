@@ -152,15 +152,13 @@ async function main() {
         } else if (proceedOption === "no") {
           logger.info("Execution aborted by user.");
           break;
-        } else if (proceedOption === "newSolution") {
-          command = await getCommandInput();
-        }
+        } 
       } else {
         await executeScript(script);
         break;
       }
     } catch (error) {
-      spinner.fail(gradient.morning("Bad Thoughts. Trying again."));
+      spinner.fail(gradient.morning("Bad Thoughts. Re-thinking."));
       logger.error({ error }, "An error occurred during processing");
     }
   }

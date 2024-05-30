@@ -35,6 +35,7 @@ async function saveConfig(config) {
     fs.mkdirSync(dir, { recursive: true });
   }
   fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+  console.log(`Config saved successfully at: ${configPath}`);
 }
 
 async function configure() {
@@ -88,7 +89,7 @@ async function configure() {
   config.aiService = aiService.aiService;
   config.showExecutionDescription = true;
   config.showExecutionPlan = true;
-  config.enableLogging = loggingConfig.enableLogging; // Add to config
+  config.enableLogging = loggingConfig.enableLogging;
 
   await saveConfig(config);
   return config;
