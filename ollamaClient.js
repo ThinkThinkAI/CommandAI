@@ -4,13 +4,15 @@ import AIClient from "./aiClient.js";
 class OllamaClient extends AIClient {
   constructor(baseURL, model, prompt) {
     super(prompt);
-    this.client = createClient({ baseURL });
+    this.baseURL = baseURL;
     this.model = model;
   }
 
   async generateScript(command) {
     try {
-      const ollama = new Ollama({ host: ollamaUrl });
+      const ollama = new Ollama({ host: this.baseURL });
+      
+      
       const response = await ollama.chat({
         model: this.model,
         messages: [{ role: "user", content: this.formatPrompt(command) }],

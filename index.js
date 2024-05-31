@@ -75,6 +75,7 @@ async function main() {
     console.log();
     config = await configure();
   }
+  //config = loadConfig();
 
   const maxRetries = 3;
   let retryCount = 0;
@@ -85,7 +86,9 @@ async function main() {
     try {
       let jsonScript;
       if (config.aiService === "Ollama") {
+       
         const client = new OllamaClient(config.ollamaUrl, config.ollamaModel);
+
         jsonScript = await client.generateScript(command);
       } else if (config.aiService === "ChatGPT") {
         const client = new ChatGPTClient(
@@ -121,7 +124,7 @@ async function main() {
       if (config.showExecutionPlan) {
         console.log(gradient.cristal("Execution Plan:"));
         script.executionPlan.forEach((line) => {
-          line = line.trim(); // Strip the line before processing
+          line = line.trim(); 
           if (line.startsWith("Create file:")) {
             const coloredLine = line.replace(/^(Create file:)/, "");
             console.log(
@@ -181,6 +184,5 @@ async function main() {
     }
   }
 }
-
 
 main();
