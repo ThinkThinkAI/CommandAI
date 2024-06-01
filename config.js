@@ -12,17 +12,17 @@ const __dirname = path.dirname(__filename);
 
 const configPath = path.join(os.homedir(), ".commandai", "config.json");
 const defaultChatGPTModel = "gpt-4o";
+const defaultOllamaUrl = "http://127.0.0.1:11434";
 
-const defaultConfig = {
-  aiService: "",
-  ollamaUrl: "",
-  ollamaModel: "",
-  chatgptApiKey: "",
-  chatgptModel: "",
-  showExecutionDescription: true,
-  showExecutionPlan: true,
-  enableLogging: false,
-};
+async function checkOllamaActive(url = defaultOllamaUrl) {
+  try {
+    const ollama = new Ollama(url);
+    await ollama.list();
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
 
 function loadConfig() {
   if (fs.existsSync(configPath)) {
@@ -50,7 +50,6 @@ async function validateApiKey(apiKey) {
     await openai.models.list();
     return true;
   } catch (error) {
-    //console.error("Failed to validate API key:", error.message);
     return false;
   }
 }
@@ -81,7 +80,6 @@ async function fetchOllamaModels(url) {
   try {
     const ollama = new Ollama(url);
     const response = await ollama.list();
-
     return response.models.map((model) => model.name);
   } catch (error) {
     console.error("Failed to fetch models from Ollama server:", error.message);
@@ -89,103 +87,144 @@ async function fetchOllamaModels(url) {
   }
 }
 
-async function configure() {
+async function promptAiService(choices, defaultValue) {
+  const aiService = await inquirer.prompt([
+    {
+      type: "list",
+      name: "aiService",
+      message: "Select the AI service:",
+      choices: choices,
+      default: defaultValue,
+    },
+  ]);
+  return aiService.aiService;
+}
+
+async function promptOllamaConfig(defaultUrl) {
+  const ollamaConfig = await inquirer.prompt([
+    {
+      type: "input",
+      name: "ollamaUrl",
+      message: "Enter the URL for the Ollama server:",
+      default: defaultUrl,
+    },
+  ]);
+
+  const isValidUrl = await validateOllamaUrl(ollamaConfig.ollamaUrl);
+  if (!isValidUrl) {
+    console.error("Invalid Ollama server URL. Please try again.");
+    return null;
+  }
+
+  const models = await fetchOllamaModels(ollamaConfig.ollamaUrl);
+  if (models.length === 0) {
+    console.error("No models found on the Ollama server. Please try again.");
+    return null;
+  }
+
+  const ollamaModel = await inquirer.prompt([
+    {
+      type: "list",
+      name: "ollamaModel",
+      message: "Select the Ollama model:",
+      choices: models,
+      default: defaultUrl,
+    },
+  ]);
+
+  return {
+    ollamaUrl: ollamaConfig.ollamaUrl,
+    ollamaModel: ollamaModel.ollamaModel,
+  };
+}
+
+async function promptChatGPTConfig(defaultApiKey, defaultModel) {
+  const chatgptConfig = await inquirer.prompt([
+    {
+      type: "input",
+      name: "chatgptApiKey",
+      message: "Enter your OpenAI API key:",
+      default: defaultApiKey,
+    },
+  ]);
+
+  const isValidApiKey = await validateApiKey(chatgptConfig.chatgptApiKey);
+  if (!isValidApiKey) {
+    console.error("Invalid API key. Please try again.");
+    return null;
+  }
+
+  const models = await fetchChatGPTModels(chatgptConfig.chatgptApiKey);
+  if (models.length === 0) {
+    console.error(
+      "No models found for the provided API key. Please try again."
+    );
+    return null;
+  }
+
+  const chatgptModel = await inquirer.prompt([
+    {
+      type: "list",
+      name: "chatgptModel",
+      message: "Select the ChatGPT model:",
+      choices: models,
+      default: defaultModel,
+    },
+  ]);
+
+  return {
+    chatgptApiKey: chatgptConfig.chatgptApiKey,
+    chatgptModel: chatgptModel.chatgptModel,
+  };
+}
+
+async function configure(
+  defaultConfig = {
+    aiService: "",
+    ollamaUrl: defaultOllamaUrl,
+    ollamaModel: "",
+    chatgptApiKey: "",
+    chatgptModel: defaultChatGPTModel,
+    showExecutionDescription: true,
+    showExecutionPlan: true,
+    enableLogging: false,
+  }
+) {
   let validConfig = false;
   let finalConfig = { ...defaultConfig };
 
+  const isOllamaActive = await checkOllamaActive();
+  const aiServiceChoices = [
+    { name: isOllamaActive ? "Ollama (Running)" : "Ollama", value: "Ollama" },
+    { name: "ChatGPT", value: "ChatGPT" },
+  ];
+
   while (!validConfig) {
-    const aiService = await inquirer.prompt([
-      {
-        type: "list",
-        name: "aiService",
-        message: "Select the AI service:",
-        choices: ["Ollama", "ChatGPT"],
-      },
-    ]);
+    finalConfig.aiService = await promptAiService(
+      aiServiceChoices,
+      finalConfig.aiService
+    );
 
-    finalConfig.aiService = aiService.aiService;
-
-    if (aiService.aiService === "Ollama") {
-      const ollamaConfig = await inquirer.prompt([
-        {
-          type: "input",
-          name: "ollamaUrl",
-          message: "Enter the URL for the Ollama server:",
-        },
-      ]);
-
-      const isValidUrl = await validateOllamaUrl(ollamaConfig.ollamaUrl);
-      if (!isValidUrl) {
-        console.error("Invalid Ollama server URL. Please try again.");
-        continue;
-      }
-
-      const models = await fetchOllamaModels(ollamaConfig.ollamaUrl);
-      if (models.length === 0) {
-        console.error(
-          "Failed to fetch models from Ollama server. Please try again."
-        );
-        continue;
-      }
-
-      const modelSelection = await inquirer.prompt([
-        {
-          type: "list",
-          name: "ollamaModel",
-          message: "Select the model to use for Ollama:",
-          choices: models,
-        },
-      ]);
-
+    if (finalConfig.aiService === "Ollama") {
+      const ollamaConfig = await promptOllamaConfig(finalConfig.ollamaUrl);
+      if (!ollamaConfig) continue;
       finalConfig.ollamaUrl = ollamaConfig.ollamaUrl;
-      finalConfig.ollamaModel = modelSelection.ollamaModel;
-      validConfig = true;
-    } else {
-      const chatGPTConfig = await inquirer.prompt([
-        {
-          type: "input",
-          name: "chatgptApiKey",
-          message: "Enter the API key for ChatGPT:",
-        },
-      ]);
-
-      const isValidApiKey = await validateApiKey(chatGPTConfig.chatgptApiKey);
-      if (!isValidApiKey) {
-        console.log();
-        console.log(
-          "Invalid ChatGPT API key. You can find your API key at https://platform.openai.com/account/api-keys "
-        );
-        console.log();
-        continue;
-      }
-
-      const models = await fetchChatGPTModels(chatGPTConfig.chatgptApiKey);
-      if (models.length === 0) {
-        console.log();
-        console.log("Failed to fetch models from ChatGPT. Please try again.");
-        console.log();
-        continue;
-      }
-
-      const modelSelection = await inquirer.prompt([
-        {
-          type: "list",
-          name: "chatgptModel",
-          message: "Select the model to use for ChatGPT:",
-          choices: models.sort(),
-          default: defaultChatGPTModel,
-        },
-      ]);
-
-      finalConfig.chatgptApiKey = chatGPTConfig.chatgptApiKey;
-      finalConfig.chatgptModel = modelSelection.chatgptModel;
-      validConfig = true;
+      finalConfig.ollamaModel = ollamaConfig.ollamaModel;
+    } else if (finalConfig.aiService === "ChatGPT") {
+      const chatgptConfig = await promptChatGPTConfig(
+        finalConfig.chatgptApiKey,
+        finalConfig.chatgptModel
+      );
+      if (!chatgptConfig) continue;
+      finalConfig.chatgptApiKey = chatgptConfig.chatgptApiKey;
+      finalConfig.chatgptModel = chatgptConfig.chatgptModel;
     }
+
+    validConfig = true;
+    await saveConfig(finalConfig);
+
+    return finalConfig;
   }
-
-  await saveConfig(finalConfig);
-
-  return finalConfig;
 }
 
-export { loadConfig, saveConfig, configure, configPath, defaultConfig };
+export { loadConfig, saveConfig, configure };
