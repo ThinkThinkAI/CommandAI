@@ -26,9 +26,9 @@ async function getCommandInput(defaultValue = "") {
     {
       type: "input",
       name: "command",
-      message: "Please provide a command:",
+      message: "What would you like me to do??:",
       default: defaultValue,
-      validate: (input) => (input ? true : "Command cannot be empty"),
+      validate: (input) => (input ? true : "?????????????!!!????????"),
     },
   ]);
   return command;
@@ -74,6 +74,15 @@ async function main() {
     console.log(gradient.cristal("No configuration found."));
     console.log();
     config = await configure();
+  } else {
+    console.log(command);
+    if (
+      command.toUpperCase() === "CONFIG" ||
+      command.toUpperCase() === "CONFIGURE"
+    ) {
+      config = await configure(config);
+      command = await getCommandInput();
+    }
   }
 
   const maxRetries = 3;
@@ -86,6 +95,7 @@ async function main() {
       let jsonScript;
       if (config.aiService === "Ollama") {
         const client = new OllamaClient(config.ollamaUrl, config.ollamaModel);
+
         jsonScript = await client.generateScript(command);
       } else if (config.aiService === "ChatGPT") {
         const client = new ChatGPTClient(
@@ -121,7 +131,7 @@ async function main() {
       if (config.showExecutionPlan) {
         console.log(gradient.cristal("Execution Plan:"));
         script.executionPlan.forEach((line) => {
-          line = line.trim(); // Strip the line before processing
+          line = line.trim();
           if (line.startsWith("Create file:")) {
             const coloredLine = line.replace(/^(Create file:)/, "");
             console.log(
@@ -181,6 +191,5 @@ async function main() {
     }
   }
 }
-
 
 main();
