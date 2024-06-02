@@ -1,13 +1,20 @@
 import os from "os";
+import logger from "./logger.js";
 
 class AIClient {
   constructor(prompt) {
     this.prompt = prompt;
-    this.osType = os.type(); 
+    this.osType = os.type();
     this.osVersion = os.release();
     this.cwd = process.cwd();
     this.shell = process.env.SHELL || "unknown shell";
     this.user = process.env.USER || "unknown user";
+    this.logger = logger;
+
+    this.logger.info(
+      `AIClient initialized with user: ${this.user}, shell: ${this.shell}, OS: ${this.osType} ${this.osVersion}`
+    );
+
     this.hasRootPermissions = this.checkRootPermissions();
   }
 
@@ -23,8 +30,34 @@ class AIClient {
     throw new Error("generateScript() must be implemented in derived classes.");
   }
 
+  isJsonString(str) {
+    try {
+      const parsed = JSON.parse(str);
+      return typeof parsed === "object" && parsed !== null;
+    } catch {
+      return false;
+    }
+  }
+
+  massage(response) {
+    if (this.isJsonString(response)) {
+      return response;
+    }
+
+    const jsonMatch = response.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
+    if (jsonMatch && this.isJsonString(jsonMatch[1])) {
+      return jsonMatch[1].trim();
+    }
+
+    return response;
+  }
+
   formatPrompt(command) {
-    return `I am at a command line on ${this.osType} (version ${this.osVersion}), using ${this.shell} shell, and logged in as ${this.user} in the directory '${this.cwd}'. 
+    return `I am at a command line on ${this.osType} (version ${
+      this.osVersion
+    }), using ${this.shell} shell, and logged in as ${
+      this.user
+    } in the directory '${this.cwd}'. 
     ${
       this.hasRootPermissions
         ? "I have root permissions."
