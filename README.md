@@ -26,6 +26,12 @@ Currently this is not optimized for all models. Your mileage will very as we fin
     npm install -g command-ai
     ```
 
+2. Upgrade
+
+    ```bash
+    npm update -g command-ai
+    ```
+    
 ## Usage
 
 1. **Initial Setup**:
