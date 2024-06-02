@@ -1,7 +1,6 @@
 import OpenAI from "openai";
 import AIClient from "./aiClient.js";
 
-
 class ChatGPTClient extends AIClient {
   constructor(apiKey, model, prompt) {
     super(prompt);
@@ -24,12 +23,7 @@ class ChatGPTClient extends AIClient {
 
       this.logger.info(`SERVER RESPONSE ${content}`);
 
-      content = content.split("\n");
-      content = content.slice(1);
-      content.pop();
-      content = content.join("\n");
-
-      return massage(content);
+      return this.massage(content);
     } catch (error) {
       throw new Error("Failed to generate script: " + error.message);
     }
@@ -40,7 +34,7 @@ export default ChatGPTClient;
 
 async function generateScript(prompt, apiKey, model) {
   const openai = new OpenAI({
-    apiKey: apiKey, 
+    apiKey: apiKey,
   });
 
   try {
@@ -50,11 +44,11 @@ async function generateScript(prompt, apiKey, model) {
     });
 
     let content = response.choices[0].message.content;
-    
+
     content = content.split("\n");
     content = content.slice(1);
     content.pop();
-    content =content.join("\n");
+    content = content.join("\n");
 
     return content;
   } catch (error) {

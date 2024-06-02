@@ -75,7 +75,7 @@ async function main() {
     console.log();
     config = await configure();
   } else {
-    console.log(command);
+    
     if (
       command.toUpperCase() === "CONFIG" ||
       command.toUpperCase() === "CONFIGURE"

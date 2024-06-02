@@ -19,7 +19,7 @@ class OllamaClient extends AIClient {
 
       this.logger.info(`SERVER RESPONSE ${response.message.content}`);
 
-      return massage(response.message.content);
+      return this.massage(response.message.content);
     } catch (error) {
       throw new Error("Failed to generate script: " + error.message);
     }
