@@ -11,14 +11,15 @@ class OllamaClient extends AIClient {
   async generateScript(command) {
     try {
       const ollama = new Ollama({ host: this.baseURL });
-      
-      
+
       const response = await ollama.chat({
         model: this.model,
         messages: [{ role: "user", content: this.formatPrompt(command) }],
       });
 
-      return response.message.content;
+      this.logger.info(`SERVER RESPONSE ${response.message.content}`);
+
+      return massage(response.message.content);
     } catch (error) {
       throw new Error("Failed to generate script: " + error.message);
     }

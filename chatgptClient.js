@@ -22,12 +22,14 @@ class ChatGPTClient extends AIClient {
 
       let content = response.choices[0].message.content;
 
+      this.logger.info(`SERVER RESPONSE ${content}`);
+
       content = content.split("\n");
       content = content.slice(1);
       content.pop();
       content = content.join("\n");
 
-      return content;
+      return massage(content);
     } catch (error) {
       throw new Error("Failed to generate script: " + error.message);
     }
