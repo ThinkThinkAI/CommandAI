@@ -1,113 +1,144 @@
-# Command AI - ai-cli
+# 🎉 Command AI - ai-cli
+```
+██████╗ ██████╗ ███╗   ███╗███╗   ███╗ █████╗ ███╗   ██╗██████╗  █████╗ ██╗
+██╔════╝██╔═══██╗████╗ ████║████╗ ████║██╔══██╗████╗  ██║██╔══██╗██╔══██╗██║
+██║     ██║   ██║██╔████╔██║██╔████╔██║███████║██╔██╗ ██║██║  ██║███████║██║
+██║     ██║   ██║██║╚██╔╝██║██║╚██╔╝██║██╔══██║██║╚██╗██║██║  ██║██╔══██║██║
+╚██████╗╚██████╔╝██║ ╚═╝ ██║██║ ╚═╝ ██║██║  ██║██║ ╚████║██████╔╝██║  ██║██║
+ ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═════╝ ╚═╝  ╚═╝╚═╝
+ ```
 
-This tool leverages AI-based services like Ollama and ChatGPT to execute commands seamlessly. It offers an interactive CLI for managing your system directly from the command line. Whether you need to retrieve your IP address or generate complete C programs from scratch, this tool has you covered.
+[Join our Discord](https://discord.gg/wPsFbpFHVH)
 
-## ALPHA!
+Welcome to Command AI, your new AI-powered command-line buddy! This program makes handling tasks a breeze. Whether you need to automate routine tasks, set up new projects, or run background operations, just tell it what you want, and it'll get to work. Check out some cool things it can do:
 
-Currently this is not optimized for all models. Your mileage will very as we fine tune our prompts for each model. The default config allows you to see execution plans and descriptions before executing the scripts.
+- **Automate Your Routine Tasks:** Need a cron job that checks your IP and pings a specific URL if it changes? Just ask!
+  ```bash
+  ai "make a cron job that checks my IP and calls https://myipchanged.com when it changes"
+  ```
 
-## Features
+- **Set Up Projects on the Fly:** Want to start an npm project that spins up a configurable web server greeting you with "hello world"? No problem.
+  ```bash
+  ai "create an npm project in ~/hello-world that starts a webserver saying 'hello world' and reads configs from a .env file"
+  ```
 
-- **AI Service Selection**: Choose between Ollama and ChatGPT for script generation.
-- **Dynamic Configuration**: Easily configure the tool through prompts.
-- **Execution Description and Plan**: View detailed plans and descriptions before executing the scripts.
-- **Logging**: Optional logging for debugging and historical records.
+- **Run Background Jobs:** Need to list all the JavaScript files on your computer and save them in a file? It can handle that in the background.
+  ```bash
+  ai "in the background, list all the JS files on this computer and put them in ~/js.txt"
+  ```
 
-## Requirements
+Just type your request into the CLI with `ai "your requests here"`, and watch the magic happen. It's like having a personal assistant for your terminal!
+
+## 🚧 ALPHA Stage Alert 🚧
+
+This tool is still in its alpha stage, so expect some hiccups as we fine-tune our prompts for different models. The default settings show you execution plans and descriptions before running scripts to keep you in the loop / safe.
+
+## 🔥 Features
+
+- **AI Service Selection**: Pick between Ollama and ChatGPT to generate scripts for you.
+- **Easy Configuration**: Set everything up quickly with a few prompts.
+- **Execution Plans**: See what’s going to happen before it happens.
+- **Optional Logging**: Keep track of everything for debugging or just for fun.
+
+## 📋 Requirements
 
 - Node.js
-- NPM
+- npm
 
-## Installation
+## 🚀 Installation
 
-1. Install globally via npm:
+1. **Install globally via npm**:
 
     ```bash
     npm install -g command-ai
     ```
 
-2. Upgrade
+2. **Upgrade**:
 
     ```bash
     npm update -g command-ai
     ```
-    
-## Usage
 
-1. **Initial Setup**:
-    - On the first run, you will be prompted to configure the AI service and other settings. The configuration will be saved in your home directory under `~/.commandai/config.json`.
+## 🎮 Usage
 
-    ```bash
-    ai
-    ```
+### Initial Setup
 
-2. **Provide Command Input**:
-    - You can provide a command either as an argument or via standard input.
+The first time you run it, you’ll set up your AI service and other settings. It saves everything in `~/.commandai/config.json`.
 
-    ```bash
-    ai "your requests here"
+```bash
+ai
+```
 
-    #examples requests.. use quotes as needed for your shell rules
-    ai make a cron job that checks my ip and curls https://myipchanged.com when it changes
+### Provide Command Input
 
-    ai make a npm project in ~/hello-world that will start a webserver that says hello world and is configurable from a .env file
+Type your command either as an argument or enter it when prompted.
 
-    ai in the background make a list of all the js files on this computer and place them in ~/js.txt
-    ```
+```bash
+ai "your requests here"
 
-    <br>
-    - Alternatively, if no argument is provided, `ai` will prompt you to enter a command.
-<br>
+# Example requests (use quotes if your shell needs them):
+ai make a cron job that checks my IP and calls https://myipchanged.com when it changes
 
-    
-    ai
-    
+ai create an npm project in ~/hello-world that starts a webserver saying "hello world" and reads configs from a .env file
 
-3. **View Execution Plan & Description**:
-    - After providing a command, Command AI fetches the script and displays the execution plan and description. You can choose whether to proceed with the script execution.
+ai in the background, list all the JS files on this computer and put them in ~/js.txt
+```
 
-4. **Logging**:
-    - If logging is enabled, all commands and their results will be logged for debugging and future reference.
+If you don't provide an argument, `ai` will just ask you to enter it.
 
-## Configuration
+```bash
+ai
+```
 
-The tool uses a configuration file stored at `~/.commandai/config.json`. The default configuration schema is as follows:
+### Execution Plans & Descriptions
+
+After you enter a command, Command AI will fetch a script and show you the plan and description. You decide if you want to run it!
+
+### Logging
+
+If you turn logging on, commands and results are stored so you can revisit them anytime. (also please turn on and send if you open up a bug ticket)
+
+## ⚙️ Configuration
+
+Settings are stored at `~/.commandai/config.json`. Here’s what it looks like:
 
 ```json
 {
-  "aiService": "",           // AI service ("Ollama" or "ChatGPT")
-  "ollamaUrl": "",           // URL for Ollama server
-  "ollamaModel": "",         // Model to use for Ollama
-  "chatgptApiKey": "",       // API key for ChatGPT
-  "chatgptModel": "",        // Model to use for ChatGPT
-  "showExecutionDescription": true,  // Show execution description
-  "showExecutionPlan": true, // Show execution plan
-  "enableLogging": false     // Enable logging
+  "aiService": "",                   // Pick "Ollama" or "ChatGPT"
+  "ollamaUrl": "",                   // Ollama server URL
+  "ollamaModel": "",                 // Model for Ollama
+  "chatgptApiKey": "",               // ChatGPT API key
+  "chatgptModel": "",                // Model for ChatGPT
+  "showExecutionDescription": true,  // Show descriptions
+  "showExecutionPlan": true,         // Show plans
+  "enableLogging": false             // Enable logging
 }
 ```
-## Development
 
-To run the project in a development environment, clone the repository and install dependencies:
+## 💻 Development
+
+Want to help out? Great! Clone the repo and install dependencies:
 
 ```bash
-git clone <https://github.com/username/command-ai.git>
+git clone https://github.com/username/command-ai.git
 cd command-ai
 npm install
 ```
 
 Run the project:
-```
+
+```bash
 npm start
 ```
 
-## Contributing
+## 🤝 Contributing
 
-We welcome contributions! Please fork the repository and create a pull request with your changes.
+We’d love your help! Fork the repo, make some changes, and send over a pull request.
 
-## License
+## 📜 License
 
 This project is licensed under the MIT License.
 
+---
 
-<br><br>
-# Enjoy making your CLI life easy CommandAI!
+Enjoy making your CLI life easier with Command AI!

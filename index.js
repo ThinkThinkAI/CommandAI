@@ -9,6 +9,8 @@ import JSONScript from "jsonscriptlib";
 import logger from "./logger.js";
 import gradient from "gradient-string";
 import getStdin from "get-stdin";
+import { readFileSync } from "fs";
+import { join } from "path";
 
 const raw_logo = [
   " ██████╗ ██████╗ ███╗   ███╗███╗   ███╗ █████╗ ███╗   ██╗██████╗  █████╗ ██╗",
@@ -65,6 +67,14 @@ async function main() {
     }
   }
 
+  // Check for version command
+  if (command.toLowerCase() === "version" || command.toLowerCase() === "-v") {
+    const packageJsonPath = join(__dirname, "package.json");
+    const packageJson = JSON.parse(readFileSync(packageJsonPath, "utf8"));
+    console.log(`Version: ${packageJson.version}`);
+    return;
+  }
+
   let config = loadConfig();
   if (!config) {
     console.log();
@@ -75,7 +85,6 @@ async function main() {
     console.log();
     config = await configure();
   } else {
-    
     if (
       command.toUpperCase() === "CONFIG" ||
       command.toUpperCase() === "CONFIGURE"
