@@ -60,7 +60,7 @@ This tool is still in its alpha stage, so expect some hiccups as we fine-tune ou
 2. **Upgrade**:
 
     ```bash
-    npm update -g command-ai
+    ai upgrade
     ```
 
 ## 🎮 Usage
@@ -88,10 +88,20 @@ ai create an npm project in ~/hello-world that starts a webserver saying "hello 
 ai in the background, list all the JS files on this computer and put them in ~/js.txt
 ```
 
-If you don't provide an argument, `ai` will just ask you to enter it.
+More commands..
 
 ```bash
+# If you don't provide prompt, `ai` will just ask you to enter it.
 ai
+
+# If you are feeling lucky an exclamation will execute without confirmation.
+ai! list all the dot files
+
+# Reconfigure 
+ai config
+
+# Upgrade Command AI
+ai upgrade
 ```
 
 ### Execution Plans & Descriptions

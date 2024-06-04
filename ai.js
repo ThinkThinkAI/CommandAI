@@ -69,7 +69,7 @@ async function main(continuePrompt = true) {
     }
   }
 
-  // Check for version command
+  
   if (command.toLowerCase() === "version" || command.toLowerCase() === "-v") {
     const packageJsonPath = join(__dirname, "package.json");
     const packageJson = JSON.parse(readFileSync(packageJsonPath, "utf8"));
@@ -96,7 +96,7 @@ async function main(continuePrompt = true) {
     }
   }
 
-  if (command.toLowerCase() === "upgrade") {
+  if (command.toUpperCase() === "UPGRADE") {
     exec("npm update -g command-ai", (error, stdout, stderr) => {
       if (error) {
         console.error(`Error: ${error.message}`);
@@ -191,14 +191,14 @@ async function main(continuePrompt = true) {
         if (proceedOption === "yes") {
           console.log();
           await executeScript(script);
-          break;
+          process.exit();
         } else if (proceedOption === "no") {
           logger.info("Execution aborted by user.");
-          break;
+          process.exit();
         }
       } else {
         await executeScript(script);
-        break;
+        process.exit();
       }
     } catch (error) {
       retryCount += 1;
@@ -224,4 +224,4 @@ async function main(continuePrompt = true) {
 
 main();
 
-export { main };
+export default main;

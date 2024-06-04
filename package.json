@@ -5,7 +5,8 @@
   "main": "ai.js",
   "type": "module",
   "bin": {
-    "ai": "./ai.js"
+    "ai": "./ai.js",
+    "ai!": "./ai!.js"
   },
   "scripts": {
     "start": "node ai.js"
