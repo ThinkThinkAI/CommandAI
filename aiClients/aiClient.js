@@ -1,5 +1,5 @@
 import os from "os";
-import logger from "./logger.js";
+import logger from "../util/logger.js";
 
 class AIClient {
   constructor(prompt) {

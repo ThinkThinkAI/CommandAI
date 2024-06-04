@@ -2,15 +2,17 @@
 
 import inquirer from "inquirer";
 import ora from "ora";
-import { loadConfig, configure } from "./config.js";
-import ChatGPTClient from "./chatgptClient.js";
-import OllamaClient from "./ollamaClient.js";
-import JSONScript from "jsonscriptlib";
-import logger from "./logger.js";
 import gradient from "gradient-string";
 import getStdin from "get-stdin";
 import { readFileSync } from "fs";
 import { join } from "path";
+import { exec } from "child_process";
+import JSONScript from "jsonscriptlib";
+
+import { loadConfig, configure } from "./util/config.js";
+import ChatGPTClient from "./aiClients/chatgptClient.js";
+import OllamaClient from "./aiClients/ollamaClient.js";
+import logger from "./util/logger.js";
 
 const raw_logo = [
   " ██████╗ ██████╗ ███╗   ███╗███╗   ███╗ █████╗ ███╗   ██╗██████╗  █████╗ ██╗",
@@ -55,7 +57,7 @@ async function executeScript(script) {
   }
 }
 
-async function main() {
+async function main(continuePrompt = true) {
   let command = process.argv.slice(2).join(" ");
 
   if (!command) {
@@ -92,6 +94,20 @@ async function main() {
       config = await configure(config);
       command = await getCommandInput();
     }
+  }
+
+  if (command.toLowerCase() === "upgrade") {
+    exec("npm update -g command-ai", (error, stdout, stderr) => {
+      if (error) {
+        console.error(`Error: ${error.message}`);
+      } else if (stderr) {
+        console.error(`stderr: ${stderr}`);
+      } else {
+        console.log(stdout);
+      }
+      process.exit();
+    });
+    return;
   }
 
   const maxRetries = 3;
@@ -154,18 +170,23 @@ async function main() {
       }
 
       if (config.showExecutionDescription || config.showExecutionPlan) {
-        const { proceedOption } = await inquirer.prompt([
-          {
-            type: "list",
-            name: "proceedOption",
-            message: "Do you want to proceed with the execution?",
-            choices: [
-              { name: "Yes", value: "yes" },
-              { name: "No", value: "no" },
-              { name: "New Solution", value: "newSolution" },
-            ],
-          },
-        ]);
+        let proceedOption = "yes";
+        continuePrompt = continuePrompt && command[0] !== "!";
+        if (continuePrompt) {
+          const { proceedOption: userProceedOption } = await inquirer.prompt([
+            {
+              type: "list",
+              name: "proceedOption",
+              message: "Do you want to proceed with the execution?",
+              choices: [
+                { name: "Yes", value: "yes" },
+                { name: "No", value: "no" },
+                { name: "New Solution", value: "newSolution" },
+              ],
+            },
+          ]);
+          proceedOption = userProceedOption;
+        }
 
         if (proceedOption === "yes") {
           console.log();
@@ -202,3 +223,5 @@ async function main() {
 }
 
 main();
+
+export { main };

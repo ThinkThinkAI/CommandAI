@@ -1,5 +1,6 @@
 # 🎉 Command AI - ai-cli
-```
+
+```text
  ██████╗ ██████╗ ███╗   ███╗███╗   ███╗ █████╗ ███╗   ██╗██████╗  █████╗ ██╗
 ██╔════╝██╔═══██╗████╗ ████║████╗ ████║██╔══██╗████╗  ██║██╔══██╗██╔══██╗██║
 ██║     ██║   ██║██╔████╔██║██╔████╔██║███████║██╔██╗ ██║██║  ██║███████║██║
@@ -13,16 +14,19 @@
 Welcome to Command AI, your new AI-powered command-line buddy! This program makes handling tasks a breeze. Whether you need to automate routine tasks, set up new projects, or run background operations, just tell it what you want, and it'll get to work. Check out some cool things it can do:
 
 - **Automate Your Routine Tasks:** Need a cron job that checks your IP and pings a specific URL if it changes? Just ask!
+
   ```bash
   ai "make a cron job that checks my IP and calls https://myipchanged.com when it changes"
   ```
 
 - **Set Up Projects on the Fly:** Want to start an npm project that spins up a configurable web server greeting you with "hello world"? No problem.
+
   ```bash
   ai "create an npm project in ~/hello-world that starts a webserver saying 'hello world' and reads configs from a .env file"
   ```
 
 - **Run Background Jobs:** Need to list all the JavaScript files on your computer and save them in a file? It can handle that in the background.
+
   ```bash
   ai "in the background, list all the JS files on this computer and put them in ~/js.txt"
   ```

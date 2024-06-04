@@ -2,13 +2,13 @@
   "name": "command-ai",
   "version": "0.1.6",
   "description": "Command AI",
-  "main": "index.js",
+  "main": "ai.js",
   "type": "module",
   "bin": {
-    "ai": "./index.js"
+    "ai": "./ai.js"
   },
   "scripts": {
-    "start": "node index.js"
+    "start": "node ai.js"
   },
   "keywords": [
     "jsonscript",
