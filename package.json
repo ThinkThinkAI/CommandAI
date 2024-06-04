@@ -1,6 +1,6 @@
 {
   "name": "command-ai",
-  "version": "0.1.6",
+  "version": "0.2.0",
   "description": "Command AI",
   "main": "ai.js",
   "type": "module",
