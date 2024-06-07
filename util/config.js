@@ -196,7 +196,7 @@ async function configure(
   const isOllamaActive = await checkOllamaActive();
   const aiServiceChoices = [
     { name: isOllamaActive ? "Ollama (Running)" : "Ollama", value: "Ollama" },
-    { name: "ChatGPT", value: "ChatGPT" },
+    { name: "ChatGPT", value: "ChatGPT" }, 
   ];
 
   while (!validConfig) {

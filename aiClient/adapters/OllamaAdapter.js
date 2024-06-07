@@ -1,11 +1,10 @@
 import { Ollama } from "ollama";
-import AIClient from "./aiClient.js";
+import BaseAdapter from "./BaseAdapter.js";
 
-class OllamaClient extends AIClient {
-  constructor(baseURL, model, prompt) {
-    super(prompt);
-    this.baseURL = baseURL;
-    this.model = model;
+class OllamaAdapter extends BaseAdapter {
+  constructor(config) {
+    this.baseURL = config.baseURL;
+    this.model = config.model;
   }
 
   async generateScript(command) {
@@ -26,4 +25,4 @@ class OllamaClient extends AIClient {
   }
 }
 
-export default OllamaClient;
+export default OllamaAdapter;

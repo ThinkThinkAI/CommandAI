@@ -10,8 +10,8 @@ import { exec } from "child_process";
 import JSONScript from "jsonscriptlib";
 
 import { loadConfig, configure } from "./util/config.js";
-import ChatGPTClient from "./aiClients/chatgptClient.js";
-import OllamaClient from "./aiClients/ollamaClient.js";
+import ChatGPTClient from "./aiClient/adapters/chatgptAdapter.js";
+import OllamaClient from "./aiClient/adapters/ollamaAdapter.js";
 import logger from "./util/logger.js";
 
 const raw_logo = [
@@ -69,7 +69,6 @@ async function main(continuePrompt = true) {
     }
   }
 
-  
   if (command.toLowerCase() === "version" || command.toLowerCase() === "-v") {
     const packageJsonPath = join(__dirname, "package.json");
     const packageJson = JSON.parse(readFileSync(packageJsonPath, "utf8"));
@@ -118,19 +117,8 @@ async function main(continuePrompt = true) {
 
     try {
       let jsonScript;
-      if (config.aiService === "Ollama") {
-        const client = new OllamaClient(config.ollamaUrl, config.ollamaModel);
-
-        jsonScript = await client.generateScript(command);
-      } else if (config.aiService === "ChatGPT") {
-        const client = new ChatGPTClient(
-          config.chatgptApiKey,
-          config.chatgptModel
-        );
-        jsonScript = await client.generateScript(command);
-      } else {
-        throw new Error("Invalid AI service configuration.");
-      }
+      const client = new AIClient(config);
+      jsonScript = await client.generateScript(command);
 
       spinner.succeed(gradient.cristal("Ready."));
       console.log();
