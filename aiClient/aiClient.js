@@ -1,7 +1,6 @@
 import OllamaAdapter from "./adapters/OllamaAdapter.js";
 import ChatGPTAdapter from "./adapters/ChatGPTAdapter.js";
 
-
 class AIClient {
   constructor(config) {
     this.adapter =
