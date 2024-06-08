@@ -1,21 +1,19 @@
 import os from "os";
-import logger from "../util/logger.js";
+import logger from "../../util/logger.js";
 
-class AIClient {
-  constructor(prompt) {
-    this.prompt = prompt;
+class BaseAdapter {
+  constructor(config) {
     this.osType = os.type();
     this.osVersion = os.release();
     this.cwd = process.cwd();
     this.shell = process.env.SHELL || "unknown shell";
     this.user = process.env.USER || "unknown user";
     this.logger = logger;
+    this.hasRootPermissions = this.checkRootPermissions();
 
     this.logger.info(
       `AIClient initialized with user: ${this.user}, shell: ${this.shell}, OS: ${this.osType} ${this.osVersion}`
     );
-
-    this.hasRootPermissions = this.checkRootPermissions();
   }
 
   checkRootPermissions() {
@@ -78,4 +76,4 @@ class AIClient {
   }
 }
 
-export default AIClient;
+export default BaseAdapter;
