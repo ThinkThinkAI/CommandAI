@@ -3,8 +3,9 @@ import BaseAdapter from "./BaseAdapter.js";
 
 class ChatGPTAdapter extends BaseAdapter {
   constructor(config) {
-    this.apiKey = config.apiKey;
-    this.model = config.model;
+    super(config);
+    this.apiKey = config.chatgptApiKey;
+    this.model = config.chatgptModel;
   }
 
   async generateScript(command) {

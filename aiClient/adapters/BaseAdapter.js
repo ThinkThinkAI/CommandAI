@@ -1,8 +1,8 @@
-import logger from "../util/logger.js";
+import os from "os";
+import logger from "../../util/logger.js";
 
 class BaseAdapter {
   constructor(config) {
-    this.prompt = prompt;
     this.osType = os.type();
     this.osVersion = os.release();
     this.cwd = process.cwd();

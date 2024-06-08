@@ -10,8 +10,7 @@ import { exec } from "child_process";
 import JSONScript from "jsonscriptlib";
 
 import { loadConfig, configure } from "./util/config.js";
-import ChatGPTClient from "./aiClient/adapters/chatgptAdapter.js";
-import OllamaClient from "./aiClient/adapters/ollamaAdapter.js";
+import AIClient from "./aiClient/aiClient.js";
 import logger from "./util/logger.js";
 
 const raw_logo = [

@@ -3,9 +3,10 @@ import BaseAdapter from "./BaseAdapter.js";
 
 class OllamaAdapter extends BaseAdapter {
   constructor(config) {
-    this.baseURL = config.baseURL;
-    this.model = config.model;
-  }
+    super(config);
+    this.baseURL = config.ollamaUrl;
+    this.model = config.ollamaModel;
+  } 
 
   async generateScript(command) {
     try {
