@@ -9,9 +9,9 @@ import { join } from "path";
 import { exec } from "child_process";
 import JSONScript from "jsonscriptlib";
 
-import { loadConfig, configure } from "./util/config.js";
-import AIClient from "./aiClient/aiClient.js";
-import logger from "./util/logger.js";
+import { loadConfig, configure } from "./lib/config.js";
+import AIClient from "./lib/aiClient/aiClient.js";
+import logger from "./lib/logger.js";
 
 const raw_logo = [
   " ██████╗ ██████╗ ███╗   ███╗███╗   ███╗ █████╗ ███╗   ██╗██████╗  █████╗ ██╗",
