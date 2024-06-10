@@ -11,7 +11,9 @@ import JSONScript from "jsonscriptlib";
 
 import { loadConfig, configure } from "./lib/config.js";
 import AIClient from "./lib/aiClient/aiClient.js";
-import logger from "./lib/logger.js";
+import Logger from "./lib/logger.js";
+
+const logger = new Logger("command");
 
 const raw_logo = [
   " ██████╗ ██████╗ ███╗   ███╗███╗   ███╗ █████╗ ███╗   ██╗██████╗  █████╗ ██╗",
@@ -41,16 +43,13 @@ async function executeScript(script) {
   const result = await script.execute();
 
   if (result.error) {
-    console.error("Execution Error:", result.error);
     logger.error({ error: result.error }, "Execution Error");
   } else {
     result.results.forEach((res) => {
       if (res.type === "cmd") {
         console.log(res.result);
-        logger.info({ cmdResult: res.result }, "Command Result");
       } else if (res.type === "file") {
         console.log(`File ${res.result}`);
-        logger.info({ fileResult: res.result }, "File Result");
       }
     });
   }
