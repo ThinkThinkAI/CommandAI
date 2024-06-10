@@ -188,6 +188,7 @@ async function main(continuePrompt = true) {
         process.exit();
       }
     } catch (error) {
+      console.log(error);
       retryCount += 1;
       spinner.fail(gradient.morning("Bad Thoughts. Re-thinking."));
       logger.error({ error }, "An error occurred during processing");
