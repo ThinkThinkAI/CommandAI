@@ -67,6 +67,20 @@ async function main(continuePrompt = true) {
     }
   }
 
+  if (command.toUpperCase() === "UPGRADE") {
+    exec("npm update -g command-ai", (error, stdout, stderr) => {
+      if (error) {
+        console.error(`Error: ${error.message}`);
+      } else if (stderr) {
+        console.error(`stderr: ${stderr}`);
+      } else {
+        console.log(stdout);
+      }
+      process.exit();
+    });
+    return;
+  }
+
   if (command.toLowerCase() === "version" || command.toLowerCase() === "-v") {
     const packageJsonPath = join(__dirname, "package.json");
     const packageJson = JSON.parse(readFileSync(packageJsonPath, "utf8"));
@@ -91,20 +105,6 @@ async function main(continuePrompt = true) {
       config = await configure(config);
       command = await getCommandInput();
     }
-  }
-
-  if (command.toUpperCase() === "UPGRADE") {
-    exec("npm update -g command-ai", (error, stdout, stderr) => {
-      if (error) {
-        console.error(`Error: ${error.message}`);
-      } else if (stderr) {
-        console.error(`stderr: ${stderr}`);
-      } else {
-        console.log(stdout);
-      }
-      process.exit();
-    });
-    return;
   }
 
   const maxRetries = 3;
