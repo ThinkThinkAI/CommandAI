@@ -3,41 +3,15 @@
 import inquirer from "inquirer";
 import ora from "ora";
 import gradient from "gradient-string";
-import getStdin from "get-stdin";
-import { readFileSync } from "fs";
-import { join } from "path";
-import { exec } from "child_process";
 import JSONScript from "jsonscriptlib";
 
-import { loadConfig, configure } from "./lib/config.js";
 import AIClient from "./lib/aiClient/aiClient.js";
 import Logger from "./lib/logger.js";
 
+import { getCommand, cliCommands, getConfig, LOGO } from "./lib/cli.js";
+
+
 const logger = new Logger("command");
-
-const raw_logo = [
-  " ██████╗ ██████╗ ███╗   ███╗███╗   ███╗ █████╗ ███╗   ██╗██████╗  █████╗ ██╗",
-  "██╔════╝██╔═══██╗████╗ ████║████╗ ████║██╔══██╗████╗  ██║██╔══██╗██╔══██╗██║",
-  "██║     ██║   ██║██╔████╔██║██╔████╔██║███████║██╔██╗ ██║██║  ██║███████║██║",
-  "██║     ██║   ██║██║╚██╔╝██║██║╚██╔╝██║██╔══██║██║╚██╗██║██║  ██║██╔══██║██║",
-  "╚██████╗╚██████╔╝██║ ╚═╝ ██║██║ ╚═╝ ██║██║  ██║██║ ╚████║██████╔╝██║  ██║██║",
-  " ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═════╝ ╚═╝  ╚═╝╚═╝",
-];
-
-const logo = gradient.atlas.multiline(raw_logo.join("\n"));
-
-async function getCommandInput(defaultValue = "") {
-  const { command } = await inquirer.prompt([
-    {
-      type: "input",
-      name: "command",
-      message: "What would you like me to do??:",
-      default: defaultValue,
-      validate: (input) => (input ? true : "?????????????!!!????????"),
-    },
-  ]);
-  return command;
-}
 
 async function executeScript(script) {
   const result = await script.execute();
@@ -56,56 +30,11 @@ async function executeScript(script) {
 }
 
 async function main(continuePrompt = true) {
-  let command = process.argv.slice(2).join(" ");
+  let command = await getCommand();
 
-  if (!command) {
-    const stdinInput = await getStdin();
-    if (stdinInput.trim()) {
-      command = stdinInput.trim();
-    } else {
-      command = await getCommandInput();
-    }
-  }
+  await cliCommands(command);
 
-  if (command.toUpperCase() === "UPGRADE") {
-    exec("npm update -g command-ai", (error, stdout, stderr) => {
-      if (error) {
-        console.error(`Error: ${error.message}`);
-      } else if (stderr) {
-        console.error(`stderr: ${stderr}`);
-      } else {
-        console.log(stdout);
-      }
-      process.exit();
-    });
-    return;
-  }
-
-  if (command.toLowerCase() === "version" || command.toLowerCase() === "-v") {
-    const packageJsonPath = join(__dirname, "package.json");
-    const packageJson = JSON.parse(readFileSync(packageJsonPath, "utf8"));
-    console.log(`Version: ${packageJson.version}`);
-    return;
-  }
-
-  let config = loadConfig();
-  if (!config) {
-    console.log();
-    console.log(logo);
-    console.log();
-
-    console.log(gradient.cristal("No configuration found."));
-    console.log();
-    config = await configure();
-  } else {
-    if (
-      command.toUpperCase() === "CONFIG" ||
-      command.toUpperCase() === "CONFIGURE"
-    ) {
-      config = await configure(config);
-      command = await getCommandInput();
-    }
-  }
+  let config = await getConfig(command);
 
   const maxRetries = 3;
   let retryCount = 0;
@@ -116,8 +45,6 @@ async function main(continuePrompt = true) {
     try {
       const client = new AIClient(config);
       let jsonScript = await client.generateScript(command);
-
-      if (!jsonScript)
 
       spinner.succeed(gradient.cristal("Ready."));
       console.log();
