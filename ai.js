@@ -114,18 +114,22 @@ async function main(continuePrompt = true) {
     const spinner = ora(gradient.cristal("Thinking...")).start();
 
     try {
-      let jsonScript;
       const client = new AIClient(config);
-      jsonScript = await client.generateScript(command);
+      let jsonScript = await client.generateScript(command);
+
+      if (!jsonScript)
 
       spinner.succeed(gradient.cristal("Ready."));
       console.log();
 
-      logger.info({ command }, "Command logged");
-      logger.info(
-        { jsonScript: JSON.parse(jsonScript) },
-        "JSON Response logged"
-      );
+      try {
+        logger.info(
+          { jsonScript: JSON.parse(jsonScript) },
+          "JSON Response logged"
+        );
+      } catch(e) {
+        logger.info(`AI Client Response ${jsonScript}`)
+      }
 
       const script = new JSONScript(JSON.parse(jsonScript));
 
