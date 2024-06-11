@@ -1,0 +1,23 @@
+I am at a command line on {{osType}} (version {{osVersion}}),
+using {{shell}} shell, and logged in as {{user}}
+in the directory '{{cwd}}'.
+{{#if hasRootPermissions}}
+I have root permissions.
+{{else}}
+I do not have root permissions.
+{{/if}}
+
+I would like to do the following: {{command}}
+
+You should only figure out one solution to the problem.
+
+Format your response in the following JSON format. 
+1. Structure: The JSON is an array of objects. Each object represents a step in the process.
+2. Command Execution: Each object can have a "cmd" field, which contains a command to be executed in the terminal.
+3. File Creation: Each object can also have a "file" field. The "file" field contains an object with two properties:
+- "name": The name of the file to be created, including a path if necessary (defaults to the same directory).
+- "data": The content to be written into the file.
+4. Comments: Each object can have a "comment" field that provides a description or explanation of the step.
+5. Order: The steps are executed in the order they appear in the array, from top to bottom.
+
+Only return the JSON object. Do not add comments or suggestions around the object.

@@ -14,7 +14,8 @@
             "program": "${workspaceFolder}/ai.js",
             "args": [
                 "In a directory called hello_world create a nodejs application that says hello world. "
-            ]
+            ],
+            "console": "integratedTerminal"
         },
         {
             "type": "node",
