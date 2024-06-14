@@ -8,6 +8,7 @@
 ╚██████╗╚██████╔╝██║ ╚═╝ ██║██║ ╚═╝ ██║██║  ██║██║ ╚████║██████╔╝██║  ██║██║
  ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═════╝ ╚═╝  ╚═╝╚═╝
  ```
+[![Maintainability](https://api.codeclimate.com/v1/badges/fb6299a2ae58c7570afa/maintainability)](https://codeclimate.com/github/CommandAI/ai-cli/maintainability)
 
 [Join our Discord](https://discord.gg/wPsFbpFHVH)
 
