@@ -81,55 +81,53 @@ async function promptUser() {
   ]);
   return proceedOption;
 }
-
-function handleError(error, retryCount, maxRetries) {
-  console.log(error);
-  const spinner = ora(gradient.cristal("Thinking...")).start();
-  spinner.fail(gradient.morning("Bad Thoughts. Re-thinking."));
-  logger.error({ error }, "An error occurred during processing");
-
-  if (retryCount > maxRetries) {
-    console.log(
-      gradient.cristal(
-        "The AI Service and Model is not working correctly for us.",
-      ),
-    );
-    console.log(
-      gradient.morning(
-        "Please try again or open a ticket on https://github.com/CommandAI/ai-cli/issues with your AI Service Provider and Model.",
-      ),
-    );
-  }
-}
-
 async function main(continuePrompt = true) {
   const command = await getCommand();
   const config = await getConfig(command);
+  await executeWithRetries(command, config, continuePrompt);
+}
 
-  const maxRetries = 3;
+async function executeWithRetries(
+  command,
+  config,
+  continuePrompt,
+  maxRetries = 3,
+) {
   let retryCount = 0;
 
   while (retryCount <= maxRetries) {
     try {
-      const jsonScript = await generateScript(command, config);
-      const script = new JSONScript(JSON.parse(jsonScript));
-
-      displayExecutionDetails(script, config);
-
-      const shouldPromptUser = continuePrompt && command[0] !== "!";
-      const proceedOption = shouldPromptUser ? await promptUser() : "yes";
-
-      if (proceedOption === "yes") {
-        await executeScript(script);
-        process.exit();
-      } else if (proceedOption === "no") {
-        logger.info("Execution aborted by user.");
-        process.exit();
-      }
+      await executeScriptFlow(command, config, continuePrompt);
+      process.exit();
     } catch (error) {
       handleError(error, retryCount, maxRetries);
       retryCount += 1;
     }
+  }
+}
+
+async function executeScriptFlow(command, config, continuePrompt) {
+  const jsonScript = await generateScript(command, config);
+  const script = new JSONScript(JSON.parse(jsonScript));
+
+  displayExecutionDetails(script, config);
+
+  const shouldPromptUser = continuePrompt && command[0] !== "!";
+  const proceedOption = shouldPromptUser ? await promptUser() : "yes";
+
+  if (proceedOption === "yes") {
+    await executeScript(script);
+  } else if (proceedOption === "no") {
+    logger.info("Execution aborted by user.");
+    process.exit();
+  }
+}
+
+function handleError(error, retryCount, maxRetries) {
+  logger.error(`An error occurred: ${error.message}`);
+  if (retryCount >= maxRetries) {
+    logger.error("Max retries reached. Aborting execution.");
+    process.exit(1);
   }
 }
 
