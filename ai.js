@@ -8,8 +8,7 @@ import JSONScript from "jsonscriptlib";
 import AIClient from "./lib/aiClient/aiClient.js";
 import Logger from "./lib/logger.js";
 
-import { getCommand, cliCommands, getConfig, LOGO } from "./lib/cli.js";
-
+import { getCommand, getConfig } from "./lib/cli.js";
 
 const logger = new Logger("command");
 
@@ -29,8 +28,6 @@ async function executeScript(script) {
   }
 }
 
-
-
 async function generateScript(command, config) {
   const spinner = ora(gradient.cristal("Thinking...")).start();
   const client = new AIClient(config);
@@ -47,7 +44,7 @@ function displayExecutionDetails(script, config) {
     console.log(
       script.executionDescription
         .map((line) => gradient.teen(line.trim()))
-        .join("\n")
+        .join("\n"),
     );
     console.log();
   }
@@ -59,7 +56,7 @@ function displayExecutionDetails(script, config) {
       if (line.startsWith("Create file:")) {
         const coloredLine = line.replace(/^(Create file:)/, "");
         console.log(
-          gradient.passion("Create file:") + gradient.teen(coloredLine)
+          gradient.passion("Create file:") + gradient.teen(coloredLine),
         );
       } else {
         console.log(gradient.teen(line));
@@ -94,13 +91,13 @@ function handleError(error, retryCount, maxRetries) {
   if (retryCount > maxRetries) {
     console.log(
       gradient.cristal(
-        "The AI Service and Model is not working correctly for us."
-      )
+        "The AI Service and Model is not working correctly for us.",
+      ),
     );
     console.log(
       gradient.morning(
-        "Please try again or open a ticket on https://github.com/CommandAI/ai-cli/issues with your AI Service Provider and Model."
-      )
+        "Please try again or open a ticket on https://github.com/CommandAI/ai-cli/issues with your AI Service Provider and Model.",
+      ),
     );
   }
 }
@@ -135,7 +132,6 @@ async function main(continuePrompt = true) {
     }
   }
 }
-
 
 main();
 
