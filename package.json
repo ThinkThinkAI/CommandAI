@@ -34,6 +34,13 @@
     "openai": "^4.47.1",
     "ora": "^8.0.1",
     "pino": "^9.1.0",
-    "pino-pretty": "^11.1.0"
+    "pino-pretty": "^11.1.0",
+    "prettier": "^3.3.2",
+    "prettier-eslint": "^16.3.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.5.0",
+    "eslint": "^9.5.0",
+    "globals": "^15.4.0"
   }
 }
