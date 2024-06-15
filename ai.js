@@ -101,7 +101,6 @@ async function executeWithRetries(
   while (retryCount <= maxRetries) {
     try {
       await executeScriptFlow(command, config, continuePrompt);
-      process.exit();
     } catch (error) {
       handleError(error, retryCount, maxRetries);
       retryCount += 1;
@@ -120,6 +119,7 @@ async function executeScriptFlow(command, config, continuePrompt) {
 
   if (proceedOption === "yes") {
     await executeScript(script);
+    process.exit();
   } else if (proceedOption === "no") {
     logger.info("Execution aborted by user.");
     process.exit();
