@@ -38,31 +38,39 @@ async function generateScript(command, config) {
   return jsonScript;
 }
 
+function displayExecutionDescription(script) {
+  console.log(gradient.cristal("Execution Description:"));
+  console.log(
+    script.executionDescription
+      .map((line) => gradient.teen(line.trim()))
+      .join("\n"),
+  );
+  console.log();
+}
+
+function displayExecutionPlan(script) {
+  console.log(gradient.cristal("Execution Plan:"));
+  script.executionPlan.forEach((line) => {
+    line = line.trim();
+    if (line.startsWith("Create file:")) {
+      const coloredLine = line.replace(/^(Create file:)/, "");
+      console.log(
+        gradient.passion("Create file:") + gradient.teen(coloredLine),
+      );
+    } else {
+      console.log(gradient.teen(line));
+    }
+  });
+  console.log();
+}
+
 function displayExecutionDetails(script, config) {
   if (config.showExecutionDescription) {
-    console.log(gradient.cristal("Execution Description:"));
-    console.log(
-      script.executionDescription
-        .map((line) => gradient.teen(line.trim()))
-        .join("\n"),
-    );
-    console.log();
+    displayExecutionDescription(script);
   }
 
   if (config.showExecutionPlan) {
-    console.log(gradient.cristal("Execution Plan:"));
-    script.executionPlan.forEach((line) => {
-      line = line.trim();
-      if (line.startsWith("Create file:")) {
-        const coloredLine = line.replace(/^(Create file:)/, "");
-        console.log(
-          gradient.passion("Create file:") + gradient.teen(coloredLine),
-        );
-      } else {
-        console.log(gradient.teen(line));
-      }
-    });
-    console.log();
+    displayExecutionPlan(script);
   }
 }
 
@@ -80,11 +88,6 @@ async function promptUser() {
     },
   ]);
   return proceedOption;
-}
-async function main(continuePrompt = true) {
-  const command = await getCommand();
-  const config = await getConfig(command);
-  await executeWithRetries(command, config, continuePrompt);
 }
 
 async function executeWithRetries(
@@ -129,6 +132,12 @@ function handleError(error, retryCount, maxRetries) {
     logger.error("Max retries reached. Aborting execution.");
     process.exit(1);
   }
+}
+
+async function main(continuePrompt = true) {
+  const command = await getCommand();
+  const config = await getConfig(command);
+  await executeWithRetries(command, config, continuePrompt);
 }
 
 main();

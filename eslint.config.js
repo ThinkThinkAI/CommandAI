@@ -8,6 +8,7 @@ export default [
     },
     rules: {
       complexity: ["error", 5],
+      "max-lines-per-function": ["error", { max: 25 }],
     },
   },
   pluginJs.configs.recommended,
