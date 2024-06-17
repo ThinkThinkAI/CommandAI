@@ -33,6 +33,12 @@ Welcome to Command AI, your new AI-powered command-line buddy! This program make
   ai "in the background, list all the JS files on this computer and put them in ~/js.txt"
   ```
 
+- **Start an AI conversation:** Want to have a conversation with an AI? It can do that too.
+
+  ```bash
+  aic "what is the meaning of life?"
+  ```
+
 Just type your request into the CLI with `ai "your requests here"`, and watch the magic happen. It's like having a personal assistant for your terminal!
 
 ## 🚧 ALPHA Stage Alert 🚧
@@ -88,6 +94,12 @@ ai make a cron job that checks my IP and calls https://myipchanged.com when it c
 ai create an npm project in ~/hello-world that starts a webserver saying "hello world" and reads configs from a .env file
 
 ai in the background, list all the JS files on this computer and put them in ~/js.txt
+
+# Start an AI conversation
+aic "what is the meaning of life?"
+
+# Get only one response from AI
+aic! "what is the meaning of life?"
 ```
 
 More commands..
