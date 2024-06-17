@@ -6,7 +6,9 @@
   "type": "module",
   "bin": {
     "ai": "./ai.js",
-    "ai!": "./ai!.js"
+    "ai!": "./ai!.js",
+    "aic": "./aic.js",
+    "aic!": "./aic!.js"
   },
   "scripts": {
     "start": "node ai.js"
@@ -28,8 +30,11 @@
     "get-stdin": "^9.0.0",
     "gradient-string": "^2.0.2",
     "handlebars": "^4.7.8",
+    "highlight.js": "^11.9.0",
     "inquirer": "^9.2.22",
     "jsonscriptlib": "^0.4.0",
+    "marked": "^13.0.0",
+    "marked-terminal": "^7.1.0",
     "ollama": "^0.5.1",
     "openai": "^4.47.1",
     "ora": "^8.0.1",
