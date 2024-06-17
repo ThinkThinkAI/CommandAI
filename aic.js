@@ -51,19 +51,19 @@ async function chatPrompt() {
   return result;
 }
 
-async function startConversation(client, question) {
+async function startConversation(client, initialQuestion) {
+  const exitWords = new Set(["exit", "goodbye", "quit"]);
+
   let continueConversation = true;
+  let question = initialQuestion;
 
   while (continueConversation) {
-    if (question === null) {
+    if (!question) {
       question = await chatPrompt();
     }
 
-    const exitWords = ["exit", "goodbye", "quit"];
-
-    if (!question || exitWords.includes(question.toLowerCase().trim())) {
+    if (shouldExitConversation(question, exitWords)) {
       continueConversation = false;
-      console.log(gradient.morning("Goodbye!"));
       break;
     }
 
@@ -71,7 +71,12 @@ async function startConversation(client, question) {
     question = null;
   }
 
+  console.log(gradient.morning("Goodbye!"));
   process.exit();
+}
+
+function shouldExitConversation(question, exitWords) {
+  return !question || exitWords.has(question.toLowerCase().trim());
 }
 
 async function main(startConvo = true) {
