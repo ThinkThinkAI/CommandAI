@@ -13,7 +13,7 @@
 
 [Join our Discord](https://discord.gg/wPsFbpFHVH)
 
-Welcome to Command AI, your new AI-powered command-line buddy! This program makes handling tasks a breeze. Whether you need to automate routine tasks, set up new projects, or run background operations, just tell it what you want, and it'll get to work. Check out some cool things it can do:
+Welcome to Command AI, your new AI-powered command-line buddies! These program makes handling tasks a breeze. Whether you need to automate routine tasks, set up new projects, or run background operations, just tell it what you want, and it'll get to work. Check out some cool things it can do:
 
 - **Automate Your Routine Tasks:** Need a cron job that checks your IP and pings a specific URL if it changes? Just ask!
 
