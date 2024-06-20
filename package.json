@@ -35,11 +35,13 @@
     "jsonscriptlib": "^0.5.0",
     "marked": "^13.0.0",
     "marked-terminal": "^7.1.0",
+    "net": "^1.0.2",
     "ollama": "^0.5.1",
     "openai": "^4.47.1",
     "ora": "^8.0.1",
     "pino": "^9.1.0",
-    "pino-pretty": "^11.1.0"
+    "pino-pretty": "^11.1.0",
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.5.0",

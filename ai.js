@@ -135,9 +135,16 @@ function handleError(error, retryCount, maxRetries) {
 }
 
 async function main(continuePrompt = true) {
-  const command = await getCommand();
-  const config = await getConfig(command);
-  await executeWithRetries(command, config, continuePrompt);
+  let command = await getCommand();
+  let config = null;
+
+  [config, command] = await getConfig(command);
+
+  if (command && command.length > 0) {
+    await executeWithRetries(command, config, continuePrompt);
+  } else {
+    process.exit(0);
+  }
 }
 
 main();
