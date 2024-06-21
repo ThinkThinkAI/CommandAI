@@ -13,6 +13,7 @@ import { getCommand, getConfig } from "./lib/cli.js";
 const logger = new Logger("command");
 
 async function executeScript(script) {
+  try {
   const result = await script.execute();
 
   if (result.error) {
@@ -20,12 +21,15 @@ async function executeScript(script) {
   } else {
     result.results.forEach((res) => {
       if (res.type === "cmd") {
-        console.log(res.result);
+        //console.log(res.result);
       } else if (res.type === "file") {
         console.log(`File ${res.result}`);
       }
     });
   }
+} catch (error) {
+  console.log(error);
+}
 }
 
 async function generateScript(command, config) {
