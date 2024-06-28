@@ -116,70 +116,89 @@ async function getPreviewCount(adapter, previewQuery) {
   }
 }
 
-// eslint-disable-next-line max-lines-per-function, complexity
+async function handleQuery(command, client, adapter) {
+  const queryObj = await generateQuery(command, client, adapter);
+  console.log(gradient.cristal("Generated Query:"));
+  console.log(gradient.teen(queryObj.query));
+  return queryObj;
+}
+
+async function checkIfModifyingQuery(query) {
+  const modifyingStatementsRegex =
+    /\b(insert|update|delete|drop|alter|create|truncate|replace)\b/i;
+  return modifyingStatementsRegex.test(query);
+}
+
+async function getUserChoiceForModification(adapter, queryObj) {
+  const previewCount = await getPreviewCount(adapter, queryObj.preview_count);
+  return await promptUserWithPreview(previewCount);
+}
+
+async function tryExecutePreviewQuery(adapter, previewQuery) {
+  try {
+    const previewResult = await executeQuery(adapter, previewQuery);
+    console.log(gradient.cristal("Preview Result:"));
+    console.log(previewResult);
+    const finalChoice = await promptUser();
+    return finalChoice === "yes";
+  } catch (error) {
+    console.error(`Error executing preview query: ${error.message}`);
+    return false;
+  }
+}
+
+async function handleUserPrompt(queryObj, adapter) {
+  if (await checkIfModifyingQuery(queryObj.query)) {
+    const userChoice = await getUserChoiceForModification(adapter, queryObj);
+
+    if (userChoice === "no") {
+      return false;
+    } else if (userChoice === "preview") {
+      return await tryExecutePreviewQuery(adapter, queryObj.preview_query);
+    }
+  }
+
+  return true;
+}
+
+async function executeWithRetries(adapter, query, client) {
+  let retries = 2;
+
+  while (retries >= 0) {
+    try {
+      const result = await executeQuery(adapter, query);
+      console.log(gradient.cristal("Query Result:"));
+      console.log(result);
+      break;
+    } catch (error) {
+      if (retries > 0) {
+        console.error(`Invalid SQL: ${error.message}. Retrying...`);
+        retries--;
+        await retryQuery(client, adapter);
+      } else {
+        console.error("Failed to execute the query after multiple attempts.");
+        break;
+      }
+    }
+  }
+}
+
 async function processQuery(dbConfigs, connectionNameOrFile, command, client) {
   const connectionConfig = await getConnectionConfig(
     dbConfigs,
     connectionNameOrFile,
   );
-
   const adapter = getDatabaseAdapter(
     connectionConfig.type,
     connectionConfig.config,
   );
 
-  const queryObj = await generateQuery(command, client, adapter);
+  const queryObj = await handleQuery(command, client, adapter);
 
-  console.log(gradient.cristal("Generated Query:"));
-  console.log(gradient.teen(queryObj.query));
+  const shouldExecute = await handleUserPrompt(queryObj, adapter);
 
-  const modifyingStatementsRegex =
-    /\b(insert|update|delete|drop|alter|create|truncate|replace)\b/i;
-  const isModifyingQuery = modifyingStatementsRegex.test(queryObj.query);
-
-  let execute = true;
-
-  if (isModifyingQuery) {
-    const previewCount = await getPreviewCount(adapter, queryObj.preview_count);
-    const userChoice = await promptUserWithPreview(previewCount);
-    if (userChoice === "no") {
-      execute = false;
-    } else if (userChoice === "preview") {
-      try {
-        const previewResult = await executeQuery(
-          adapter,
-          queryObj.preview_query,
-        );
-        console.log(gradient.cristal("Preview Result:"));
-        console.log(previewResult);
-        const finalChoice = await promptUser();
-        execute = finalChoice === "yes";
-      } catch (error) {
-        console.error(`Error executing preview query: ${error.message}`);
-        execute = false;
-      }
-    }
-  }
-
-  if (execute) {
-    let retries = 2;
-    while (retries >= 0) {
-      try {
-        const result = await executeQuery(adapter, queryObj.query);
-        console.log(gradient.cristal("Query Result:"));
-        console.log(result);
-        break;
-      } catch (error) {
-        if (retries > 0) {
-          console.error(`Invalid SQL: ${error.message}. Retrying...`);
-          retries--;
-          await retryQuery(client, adapter);
-        } else {
-          console.error("Failed to execute the query after multiple attempts.");
-          break;
-        }
-      }
-    }
+  if (shouldExecute) {
+    await executeWithRetries(adapter, queryObj.query, client);
   } else {
     console.log("Query execution aborted by user.");
   }
