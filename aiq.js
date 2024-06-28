@@ -69,16 +69,21 @@ async function promptUser() {
   return userChoice;
 }
 
-async function promptUserWithPreview() {
+async function promptUserWithPreview(previewCount = null) {
+  const message =
+    previewCount !== null
+      ? `This query will modify ${previewCount} records. Do you want to execute or preview it?`
+      : "This query will modify the database. Do you want to execute or preview it?";
+
   const { userChoice } = await inquirer.prompt([
     {
       type: "list",
       name: "userChoice",
-      message:
-        "This query will modify the database. Do you want to execute or preview it?",
+      message: message,
       choices: ["yes", "no", "preview"],
     },
   ]);
+
   return userChoice;
 }
 
@@ -95,6 +100,23 @@ async function validateArguments(args) {
 async function setupClient(command) {
   const config = await getConfig(command);
   return new AIClient(config);
+}
+
+async function getPreviewCount(adapter, previewQuery) {
+  try {
+    const result = await executeQuery(adapter, previewQuery);
+    if (
+      Array.isArray(result) &&
+      result.length > 0 &&
+      result[0].count !== undefined
+    ) {
+      return result[0].count;
+    }
+    return null;
+  } catch (error) {
+    console.error(`Error fetching preview count: ${error.message}`);
+    return null;
+  }
 }
 
 // eslint-disable-next-line max-lines-per-function, complexity
@@ -121,7 +143,8 @@ async function processQuery(dbConfigs, connectionNameOrFile, command, client) {
   let execute = true;
 
   if (isModifyingQuery) {
-    const userChoice = await promptUserWithPreview();
+    const previewCount = await getPreviewCount(adapter, queryObj.preview_count);
+    const userChoice = await promptUserWithPreview(previewCount);
     if (userChoice === "no") {
       execute = false;
     } else if (userChoice === "preview") {
@@ -197,11 +220,9 @@ async function manageConfig() {
 
   switch (action) {
     case "Add new connection":
-      await addConnection(dbConfigs);
-      break;
+      return await addConnection(dbConfigs);
     case "Edit a connection":
-      await editConnection(dbConfigs);
-      break;
+      return await editConnection(dbConfigs);
     case "Remove a connection":
       await removeConnection(dbConfigs);
       break;
@@ -213,6 +234,7 @@ async function addConnection(dbConfigs) {
   dbConfigs.push(newConnection);
   await saveConfig(dbConfigs);
   console.log("New connection added successfully.");
+  return [dbConfigs, newConnection.name];
 }
 
 async function editConnection(dbConfigs) {
@@ -234,6 +256,7 @@ async function editConnection(dbConfigs) {
   dbConfigs[connectionIndex] = updatedConnection;
   await saveConfig(dbConfigs);
   console.log("Connection edited successfully.");
+  return [dbConfigs, connectionName];
 }
 
 async function removeConnection(dbConfigs) {
@@ -350,27 +373,41 @@ async function promptForCommands(dbConfigs, connectionNameOrFile, client) {
   } while (command.toLowerCase() !== "exit");
 }
 
+async function handleNoOrSingleParam() {
+  const [dbConfigs, connectionNameOrFile] = await manageConfig();
+  const client = await setupClient();
+
+  await promptForCommands(dbConfigs, connectionNameOrFile, client);
+}
+
+async function handleExecuteQuery(args, prompt) {
+  const connectionNameOrFile = args[0];
+  const command = args.slice(1).join(" ");
+  const dbConfigs = await loadConfig();
+  const client = await setupClient(command);
+  await processQuery(dbConfigs, connectionNameOrFile, command, client);
+  if (prompt) {
+    await promptForCommands(dbConfigs, connectionNameOrFile, client);
+  }
+}
+
 async function main(prompt = true) {
-  const args = process.argv.slice(2).join(" ").split(" ");
+  const args = process.argv.slice(2);
   const paramType = await validateArguments(args);
 
-  try {
-    if (paramType === "no-params" || paramType === "single-param") {
-      await manageConfig();
-    } else if (paramType === "execute-query") {
-      const connectionNameOrFile = args[0];
-      const command = args.slice(1).join(" ");
-      const dbConfigs = await loadConfig();
-      const client = await setupClient(command);
-      await processQuery(dbConfigs, connectionNameOrFile, command, client);
-      if (prompt) {
-        await promptForCommands(dbConfigs, connectionNameOrFile, client);
-      }
-    }
-  } catch (error) {
-    console.error(`Error: ${error.message}`);
-    process.exit(1);
+  switch (paramType) {
+    case "no-params":
+    case "single-param":
+      await handleNoOrSingleParam();
+      break;
+    case "execute-query":
+      await handleExecuteQuery(args, prompt);
+      break;
+    default:
+      throw new Error(`Unknown paramType: ${paramType}`);
   }
+
+  process.exit(0);
 }
 
 main();

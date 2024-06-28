@@ -30,6 +30,19 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "aiQUERY delete",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/aiq.js",
+            "args": [
+                "mysql delete all the transaction records"
+            ],
+            "console": "integratedTerminal"
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "aiConfig",
             "skipFiles": [
                 "<node_internals>/**"
