@@ -1,13 +1,10 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
         {
             "type": "node",
             "request": "launch",
-            "name": "ai Hello World",
+            "name": "aiHelloWorld",
             "skipFiles": [
                 "<node_internals>/**"
             ],
@@ -20,7 +17,20 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "ai config",
+            "name": "aiQUERY",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/aiq.js",
+            "args": [
+                "mysql show me all the records for transactions"
+            ],
+            "console": "integratedTerminal"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "aiConfig",
             "skipFiles": [
                 "<node_internals>/**"
             ],
