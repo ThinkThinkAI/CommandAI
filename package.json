@@ -9,7 +9,8 @@
     "ai!": "./ai!.js",
     "aic": "./aic.js",
     "aic!": "./aic!.js",
-    "aiq": "./aiq.js"
+    "aiq": "./aiq.js",
+    "aiq!": "./aiq!.js"
   },
   "scripts": {
     "start": "node ai.js"
@@ -22,7 +23,12 @@
     "file-operations",
     "ai",
     "artificial intelligence",
-    "cli"
+    "cli",
+    "sql",
+    "database",
+    "mysql",
+    "postgres",
+    "sqlite"
   ],
   "author": "Jason Jacobs <rootedbox@icloud.com>",
   "license": "MIT",

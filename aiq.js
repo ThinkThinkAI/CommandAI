@@ -350,7 +350,7 @@ async function promptForCommands(dbConfigs, connectionNameOrFile, client) {
   } while (command.toLowerCase() !== "exit");
 }
 
-async function main() {
+async function main(prompt = true) {
   const args = process.argv.slice(2).join(" ").split(" ");
   const paramType = await validateArguments(args);
 
@@ -363,7 +363,9 @@ async function main() {
       const dbConfigs = await loadConfig();
       const client = await setupClient(command);
       await processQuery(dbConfigs, connectionNameOrFile, command, client);
-      await promptForCommands(dbConfigs, connectionNameOrFile, client);
+      if (prompt) {
+        await promptForCommands(dbConfigs, connectionNameOrFile, client);
+      }
     }
   } catch (error) {
     console.error(`Error: ${error.message}`);
@@ -372,3 +374,5 @@ async function main() {
 }
 
 main();
+
+export default main;
