@@ -6,12 +6,9 @@ import inquirer from "inquirer";
 import ora from "ora";
 import gradient from "gradient-string";
 import AIClient from "./lib/aiClient/aiClient.js";
-import Logger from "./lib/logger.js";
 import { getConfig } from "./lib/cli.js";
 
 import { getDatabaseAdapter } from "dbinfoz";
-
-const logger = new Logger("aiq");
 
 const configFilePath = path.resolve(process.env.HOME, ".commandai/db.config");
 
