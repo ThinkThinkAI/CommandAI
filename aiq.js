@@ -10,7 +10,7 @@ import { getConfig } from "./lib/cli.js";
 
 import { getDatabaseAdapter } from "dbinfoz";
 
-const configFilePath = path.resolve(process.env.HOME, ".commandai/db.config");
+const configFilePath = path.resolve(process.env.HOME, ".commandai/db.json");
 
 async function getConnectionConfig(dbConfigs, nameOrFilePath) {
   const dbConfig = dbConfigs.find(
