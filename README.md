@@ -33,6 +33,13 @@ Welcome to Command AI, your new AI-powered command-line buddies! These programs 
   ai "in the background, list all the JS files on this computer and put them in ~/js.txt"
   ```
 
+- **Query Databases with AI**: Want to interact with a database using natural language? Use `aiq`! Suports MYSQL, Postgres, and SQLite.
+
+```bash
+  aiq my_database "list all users where age is over 30"
+```
+
+
 - **Start an AI conversation:** Want to have a conversation with an AI? It can do that too.
 
   ```bash
@@ -95,6 +102,14 @@ ai create an npm project in ~/hello-world that starts a webserver saying "hello 
 
 ai in the background, list all the JS files on this computer and put them in ~/js.txt
 
+# Start AI Database Query (first param is the database name, second is the query)
+aiq my_database "list all users where age is over 30"
+# or
+aiq my_database "list all users where age is over 30
+
+# Don't start a AI Database Query Session.. Get one response.
+aiq! my_database "list all users where age is over 30"
+
 # Start an AI conversation
 aic "what is the meaning of life?"
 
@@ -113,6 +128,10 @@ ai! list all the dot files
 
 # Reconfigure 
 ai config
+aic config
+
+#configure db connections
+aiq config
 
 # Upgrade Command AI
 ai upgrade
@@ -128,7 +147,7 @@ If you turn logging on, commands and results are stored so you can revisit them 
 
 ## ⚙️ Configuration
 
-Settings are stored at `~/.commandai/config.json`. Here’s what it looks like:
+AI Settings for all utilies are stored at `~/.commandai/config.json`. Here’s what it looks like:
 
 ```json
 {
@@ -142,6 +161,44 @@ Settings are stored at `~/.commandai/config.json`. Here’s what it looks like:
   "enableLogging": false             // Enable logging
 }
 ```
+
+DB Settings for `aiq` are stored at `~/.commandai/db.json`. You can setup as many connections as you like. Here’s what it looks like:
+
+```json
+[
+  {
+    "name": "PostgreSQL_Connection",
+    "type": "postgres",
+    "config": {
+      "user": "postgres_user",
+      "host": "localhost",
+      "database": "postgres_db",
+      "password": "postgres_password",
+      "port": 5432
+    }
+  },
+  {
+    "name": "MySQL_Connection",
+    "type": "mysql",
+    "config": {
+      "user": "mysql_user",
+      "host": "localhost",
+      "database": "mysql_db",
+      "password": "mysql_password",
+      "port": 3306
+    }
+  },
+  {
+    "name": "SQLite_Connection",
+    "type": "sqlite",
+    "config": {
+      "filename": "/path/to/sqlite.db"
+    }
+  }
+]
+```
+
+NOTE! sqlite does not require to be in the config you can just list the file as the first param.
 
 ## 💻 Development
 
