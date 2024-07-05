@@ -54,8 +54,6 @@ export async function cliCommands(command) {
     const packageJsonPath = join(__dirname, "package.json");
     const packageJson = JSON.parse(readFileSync(packageJsonPath, "utf8"));
     console.log(`Version: ${packageJson.version}`);
-    process.exit();
-    
     return;
   }
 }

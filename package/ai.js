@@ -8,7 +8,7 @@ import JSONScript from "jsonscriptlib";
 import AIClient from "./lib/aiClient/aiClient.js";
 import Logger from "./lib/logger.js";
 
-import { getCommand, getConfig, cliCommands } from "./lib/cli.js";
+import { getCommand, getConfig } from "./lib/cli.js";
 
 const logger = new Logger("command");
 
@@ -140,7 +140,6 @@ function handleError(error, retryCount, maxRetries) {
 
 async function main(continuePrompt = true) {
   const command = await getCommand();
-  await cliCommands(command);
   const config = await getConfig(command);
   await executeWithRetries(command, config, continuePrompt);
 }
