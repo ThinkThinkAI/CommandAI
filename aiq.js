@@ -12,19 +12,37 @@ import { getDatabaseAdapter } from "dbinfoz";
 
 const configFilePath = path.resolve(process.env.HOME, ".commandai/db.json");
 
+async function fileExists(filePath) {
+  return fs.existsSync(filePath);
+}
+
 async function getConnectionConfig(dbConfigs, nameOrFilePath) {
-  const dbConfig = dbConfigs.find(
+  let dbConfig = dbConfigs.find(
     (config) =>
       config.name === nameOrFilePath ||
       (config.config && config.config.filename === nameOrFilePath),
   );
 
   if (!dbConfig) {
-    throw new Error(`Configuration for ${nameOrFilePath} not found!`);
+    // Check if nameOrFilePath is a file directly
+    console.log(nameOrFilePath);
+    if (await fileExists(nameOrFilePath)) {
+      dbConfig = { type: 'sqlite', config: { filename: nameOrFilePath } };
+    } else {
+      // Resolve nameOrFilePath relative to the current directory
+      const relativePath = path.resolve(process.cwd(), nameOrFilePath);
+      console.log(relativePath);
+      if (await fileExists(relativePath)) {
+        dbConfig = { type: 'sqlite', config: { filename: relativePath } };
+      } else {
+        throw new Error(`Configuration for ${nameOrFilePath} not found and it's not a file!`);
+      }
+    }
   }
 
   return dbConfig;
 }
+
 
 async function generateQuery(command, client, dbAdapter) {
   const spinner = ora(gradient.cristal("Thinking...")).start();
@@ -408,7 +426,8 @@ async function handleExecuteQuery(args, prompt) {
 }
 
 async function main(prompt = true) {
-  const args = process.argv.slice(2);
+  let args = process.argv.slice(2);
+  if(args.length === 1) { args = args[0].split(' ') }
   const paramType = await validateArguments(args);
 
   switch (paramType) {
