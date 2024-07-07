@@ -31,13 +31,13 @@ async function askQuestion(question, client) {
   try {
     const response = await client.generateResponse(question);
     spinner.succeed(gradient.cristal("Ready."));
-    //console.log(response.trim());
+    
     console.log(markdownToConsole(response.trim()));
-    return response;
   } catch (error) {
     spinner.fail(gradient.cristal("Failed to get response."));
     logger.error({ error: error.message }, "Error occurred.");
   }
+  process.exit(0);
 }
 
 async function chatPrompt() {
