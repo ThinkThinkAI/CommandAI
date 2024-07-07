@@ -140,9 +140,11 @@ function handleError(error, retryCount, maxRetries) {
 
 async function main(continuePrompt = true) {
   const command = await getCommand();
-  await cliCommands(command);
-  const config = await getConfig(command);
-  await executeWithRetries(command, config, continuePrompt);
+  
+  if(await cliCommands(command)) {
+    const config = await getConfig(command);
+    await executeWithRetries(command, config, continuePrompt);
+  }
 }
 
 main();
