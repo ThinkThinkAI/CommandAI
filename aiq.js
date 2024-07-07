@@ -24,14 +24,11 @@ async function getConnectionConfig(dbConfigs, nameOrFilePath) {
   );
 
   if (!dbConfig) {
-    // Check if nameOrFilePath is a file directly
-    console.log(nameOrFilePath);
     if (await fileExists(nameOrFilePath)) {
       dbConfig = { type: 'sqlite', config: { filename: nameOrFilePath } };
     } else {
-      // Resolve nameOrFilePath relative to the current directory
       const relativePath = path.resolve(process.cwd(), nameOrFilePath);
-      console.log(relativePath);
+      
       if (await fileExists(relativePath)) {
         dbConfig = { type: 'sqlite', config: { filename: relativePath } };
       } else {
@@ -179,14 +176,54 @@ async function handleUserPrompt(queryObj, adapter) {
   return true;
 }
 
-async function executeWithRetries(adapter, query, client) {
+async function displayPagedResult(result) {
+  const pageSize = 10;
+  let currentPage = 0;
+  const totalPages = Math.ceil(result.length / pageSize);
+
+  while (true) {
+    const start = currentPage * pageSize;
+    const end = start + pageSize;
+    const pageResult = result.slice(start, end);
+
+    console.log(gradient.cristal(`Page ${currentPage + 1} of ${totalPages}:`));
+    console.log(pageResult);
+
+    const { action } = await inquirer.prompt([
+      {
+        type: 'list',
+        name: 'action',
+        message: 'Navigate:',
+        choices: ['Next', 'Previous', 'Exit'],
+      },
+    ]);
+
+    if (action === 'Next' && currentPage < totalPages - 1) {
+      currentPage++;
+    } else if (action === 'Previous' && currentPage > 0) {
+      currentPage--;
+    } else if (action === 'Exit') {
+      break;
+    }
+  }
+}
+
+
+async function executeWithRetries(adapter, query, client, prompt) {
   let retries = 2;
 
   while (retries >= 0) {
     try {
       const result = await executeQuery(adapter, query);
-      console.log(gradient.cristal("Query Result:"));
-      console.log(result);
+      if (result.length > 0) {
+        if (prompt) {
+          await displayPagedResult(result);
+        } else {
+          console.log(JSON.stringify(result, null, 2));
+        }
+      } else {
+        console.log("No records found.");
+      }
       break;
     } catch (error) {
       if (retries > 0) {
@@ -201,22 +238,17 @@ async function executeWithRetries(adapter, query, client) {
   }
 }
 
-async function processQuery(dbConfigs, connectionNameOrFile, command, client) {
-  const connectionConfig = await getConnectionConfig(
-    dbConfigs,
-    connectionNameOrFile,
-  );
-  const adapter = getDatabaseAdapter(
-    connectionConfig.type,
-    connectionConfig.config,
-  );
+
+async function processQuery(dbConfigs, connectionNameOrFile, command, client, prompt = true) {
+  const connectionConfig = await getConnectionConfig(dbConfigs, connectionNameOrFile);
+  const adapter = getDatabaseAdapter(connectionConfig.type, connectionConfig.config);
 
   const queryObj = await handleQuery(command, client, adapter);
 
   const shouldExecute = await handleUserPrompt(queryObj, adapter);
 
   if (shouldExecute) {
-    await executeWithRetries(adapter, queryObj.query, client);
+    await executeWithRetries(adapter, queryObj.query, client, prompt);
   } else {
     console.log("Query execution aborted by user.");
   }
@@ -419,7 +451,7 @@ async function handleExecuteQuery(args, prompt) {
   const command = args.slice(1).join(" ");
   const dbConfigs = await loadConfig();
   const client = await setupClient(command);
-  await processQuery(dbConfigs, connectionNameOrFile, command, client);
+  await processQuery(dbConfigs, connectionNameOrFile, command, client, prompt);
   if (prompt) {
     await promptForCommands(dbConfigs, connectionNameOrFile, client);
   }

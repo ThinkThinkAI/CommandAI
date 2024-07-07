@@ -17,3 +17,4 @@ build/
 package
 /package
 *.db
+*.db*
