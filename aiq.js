@@ -12,6 +12,14 @@ import { getDatabaseAdapter } from "dbinfoz";
 
 const configFilePath = path.resolve(process.env.HOME, ".commandai/db.json");
 
+let USE_PROMPT = true;
+
+function consoleLog(message) {
+  if (USE_PROMPT) {
+    console.log(message);
+  }
+}
+
 async function fileExists(filePath) {
   return fs.existsSync(filePath);
 }
@@ -42,10 +50,10 @@ async function getConnectionConfig(dbConfigs, nameOrFilePath) {
 
 
 async function generateQuery(command, client, dbAdapter) {
-  const spinner = ora(gradient.cristal("Thinking...")).start();
+  if (USE_PROMPT) { const spinner = ora(gradient.cristal("Thinking...")).start(); }
   const queryString = await client.generateQuery(command, dbAdapter);
-  spinner.succeed(gradient.cristal("Query generated."));
-  console.log(queryString);
+  if (USE_PROMPT) { spinner.succeed(gradient.cristal("Query generated.")); }
+  consoleLog(queryString);
 
   const queryObject = JSON.parse(queryString);
   return queryObject;
@@ -58,7 +66,7 @@ async function retryQuery(client, dbAdapter) {
     dbAdapter,
   );
   spinner.succeed(gradient.cristal("Query generated."));
-  console.log(queryString);
+  consoleLog(queryString);
 
   const queryObject = JSON.parse(queryString);
   return queryObject;
@@ -133,8 +141,8 @@ async function getPreviewCount(adapter, previewQuery) {
 
 async function handleQuery(command, client, adapter) {
   const queryObj = await generateQuery(command, client, adapter);
-  console.log(gradient.cristal("Generated Query:"));
-  console.log(gradient.teen(queryObj.query));
+  consoleLog(gradient.cristal("Generated Query:"));
+  consoleLog(gradient.teen(queryObj.query));
   return queryObj;
 }
 
@@ -250,7 +258,7 @@ async function processQuery(dbConfigs, connectionNameOrFile, command, client, pr
   if (shouldExecute) {
     await executeWithRetries(adapter, queryObj.query, client, prompt);
   } else {
-    console.log("Query execution aborted by user.");
+    consoleLog("Query execution aborted by user.");
   }
 }
 
@@ -458,6 +466,8 @@ async function handleExecuteQuery(args, prompt) {
 }
 
 async function main(prompt = true) {
+  USE_PROMPT = prompt;
+
   let args = process.argv.slice(2);
   if(args.length === 1) { args = args[0].split(' ') }
   const paramType = await validateArguments(args);

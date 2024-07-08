@@ -107,7 +107,7 @@ aiq my_database "list all users where age is over 30"
 # or
 aiq my_database "list all users where age is over 30
 
-# Don't start a AI Database Query Session.. Get one response.
+# Don't start a AI Database Query Session.. Just get one response in JSON format.
 aiq! my_database "list all users where age is over 30"
 
 # Start an AI conversation
