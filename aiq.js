@@ -247,7 +247,7 @@ async function executeWithRetries(adapter, query, client, prompt) {
 }
 
 
-async function processQuery(dbConfigs, connectionNameOrFile, command, client, prompt = true) {
+async function processQuery(dbConfigs, connectionNameOrFile, command, client) {
   const connectionConfig = await getConnectionConfig(dbConfigs, connectionNameOrFile);
   const adapter = getDatabaseAdapter(connectionConfig.type, connectionConfig.config);
 
@@ -256,7 +256,7 @@ async function processQuery(dbConfigs, connectionNameOrFile, command, client, pr
   const shouldExecute = await handleUserPrompt(queryObj, adapter);
 
   if (shouldExecute) {
-    await executeWithRetries(adapter, queryObj.query, client, prompt);
+    await executeWithRetries(adapter, queryObj.query, client, USE_PROMPT);
   } else {
     consoleLog("Query execution aborted by user.");
   }
@@ -459,7 +459,7 @@ async function handleExecuteQuery(args, prompt) {
   const command = args.slice(1).join(" ");
   const dbConfigs = await loadConfig();
   const client = await setupClient(command);
-  await processQuery(dbConfigs, connectionNameOrFile, command, client, prompt);
+  await processQuery(dbConfigs, connectionNameOrFile, command, client);
   if (prompt) {
     await promptForCommands(dbConfigs, connectionNameOrFile, client);
   }
