@@ -37,7 +37,6 @@ async function askQuestion(question, client) {
     spinner.fail(gradient.cristal("Failed to get response."));
     logger.error({ error: error.message }, "Error occurred.");
   }
-  process.exit(0);
 }
 
 async function chatPrompt() {
@@ -72,7 +71,7 @@ async function startConversation(client, initialQuestion) {
   }
 
   console.log(gradient.morning("Goodbye!"));
-  process.exit();
+  process.exit(0);
 }
 
 function shouldExitConversation(question, exitWords) {
@@ -89,12 +88,15 @@ async function main(startConvo = true) {
     } else {
       await askQuestion(command, client);
     }
+    process.exit(0);
   } catch (error) {
     logger.error(`An error occurred: ${error.message}`);
     process.exit(1);
   }
 }
 
-main();
+if (import.meta.url === `file://${process.argv[1]}`) {
+  main();
+}
 
 export default main;

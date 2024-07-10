@@ -147,6 +147,8 @@ async function main(continuePrompt = true) {
   }
 }
 
-main();
+if (import.meta.url === `file://${process.argv[1]}`) {
+  main();
+}
 
 export default main;

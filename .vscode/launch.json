@@ -17,6 +17,32 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "aiChat",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/aic.js",
+            "args": [
+                "how much would a woodchuck chuk "
+            ],
+            "console": "integratedTerminal"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "aiChat",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/aic!.js",
+            "args": [
+                "how much would a woodchuck chuk "
+            ],
+            "console": "integratedTerminal"
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "aiQUERY",
             "skipFiles": [
                 "<node_internals>/**"
