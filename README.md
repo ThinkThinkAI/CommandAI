@@ -54,10 +54,11 @@ This tool is still in its alpha stage, so expect some hiccups as we fine-tune ou
 
 ## 🔥 Features
 
-- **AI Service Selection**: Pick between Ollama and ChatGPT to generate scripts for you.
+- **AI Service Selection**: Pick between Ollama, ChatGPT, and any OpenAI compatable server.
 - **Easy Configuration**: Set everything up quickly with a few prompts.
-- **Execution Plans**: See what’s going to happen before it happens.
-- **Optional Logging**: Keep track of everything for debugging or just for fun.
+- **Command Line Power**: Ask the AI to do any task(s) you would want to do at the command line.
+- **DB Power**: Ask the AI for any information from your DB in plain language.
+- **Conversational AI**: Start a conversation with the AI.
 
 ## 📋 Requirements
 
