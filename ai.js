@@ -147,7 +147,8 @@ async function main(continuePrompt = true) {
   }
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+
+if (!`file://${process.argv[1]}`.includes('!')) {
   main();
 }
 

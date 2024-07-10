@@ -429,6 +429,11 @@ async function promptConnectionDetails(existingConfig = {}) {
   };
 }
 
+function shouldExitConversation(question) {
+  const exitWords = new Set(["exit", "goodbye", "quit"]);
+  return !question || exitWords.has(question.toLowerCase().trim());
+}
+
 async function promptForCommands(dbConfigs, connectionNameOrFile, client) {
   let command;
   do {
@@ -441,10 +446,12 @@ async function promptForCommands(dbConfigs, connectionNameOrFile, client) {
     ]);
     command = input.command;
 
-    if (command.toLowerCase() !== "exit") {
-      await processQuery(dbConfigs, connectionNameOrFile, command, client);
+    if (shouldExitConversation(command)) {
+      break;
     }
-  } while (command.toLowerCase() !== "exit");
+    
+    await processQuery(dbConfigs, connectionNameOrFile, command, client);
+  } while (true);
 }
 
 async function handleNoOrSingleParam() {
@@ -487,7 +494,7 @@ async function main(prompt = true) {
   process.exit(0);
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (!`file://${process.argv[1]}`.includes('!')) {
   main();
 }
 

@@ -51,8 +51,6 @@ async function chatPrompt() {
 }
 
 async function startConversation(client, initialQuestion) {
-  const exitWords = new Set(["exit", "goodbye", "quit"]);
-
   let continueConversation = true;
   let question = initialQuestion;
 
@@ -61,7 +59,7 @@ async function startConversation(client, initialQuestion) {
       question = await chatPrompt();
     }
 
-    if (shouldExitConversation(question, exitWords)) {
+    if (shouldExitConversation(question)) {
       continueConversation = false;
       break;
     }
@@ -74,7 +72,8 @@ async function startConversation(client, initialQuestion) {
   process.exit(0);
 }
 
-function shouldExitConversation(question, exitWords) {
+function shouldExitConversation(question) {
+  const exitWords = new Set(["exit", "goodbye", "quit"]);
   return !question || exitWords.has(question.toLowerCase().trim());
 }
 
@@ -95,7 +94,7 @@ async function main(startConvo = true) {
   }
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (!`file://${process.argv[1]}`.includes('!')) {
   main();
 }
 
