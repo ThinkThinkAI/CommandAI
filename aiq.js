@@ -487,6 +487,8 @@ async function main(prompt = true) {
   process.exit(0);
 }
 
-main();
+if (import.meta.url === `file://${process.argv[1]}`) {
+  main();
+}
 
 export default main;
