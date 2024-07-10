@@ -152,11 +152,12 @@ AI Settings for all utilies are stored at `~/.commandai/config.json`. Here’s w
 
 ```json
 {
-  "aiService": "",                   // Pick "Ollama" or "ChatGPT"
+  "aiService": "",                   // Pick "Ollama" "ChatGPT" "OpenAI"
   "ollamaUrl": "",                   // Ollama server URL
   "ollamaModel": "",                 // Model for Ollama
-  "chatgptApiKey": "",               // ChatGPT API key
-  "chatgptModel": "",                // Model for ChatGPT
+  "openAIApiKey": "",                // ChatGPT / OpenAI API key
+  "openAIModel": "",                 // Model for OpenAI
+  "openAIUrl": "",                   // URL for OpenAI not needed for ChatGPT
   "showExecutionDescription": true,  // Show descriptions
   "showExecutionPlan": true,         // Show plans
   "enableLogging": false             // Enable logging
