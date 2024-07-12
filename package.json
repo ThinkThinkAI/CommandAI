@@ -4,6 +4,10 @@
   "description": "Command AI",
   "main": "ai.js",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CommandAI/ai-cli"
+  },
   "bin": {
     "ai": "./ai.js",
     "ai!": "./ai!.js",
