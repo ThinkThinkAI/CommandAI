@@ -21,22 +21,27 @@ jobs:
       
       - name: Get current npm version
         id: current_version
-        run: echo "version=$(node -p 'require(`./package.json`).version')" >> $GITHUB_ENV
+        run: |
+          CURRENT_VERSION=$(node -p 'require(`./package.json`).version')
+          echo "current_version=${CURRENT_VERSION}" >> $GITHUB_ENV
+          echo "Current npm version: ${CURRENT_VERSION}"
       
       - name: Get previous npm version
         id: previous_version
         run: |
-          PREV_VERSION=$(npm view ${{ github.repository }} version)
+          PREV_VERSION=$(npm show $(node -p 'require(`./package.json`).name') version)
           echo "prev_version=${PREV_VERSION}" >> $GITHUB_ENV
+          echo "Previous npm version: ${PREV_VERSION}"
       
       - name: Check version change
         id: version_check
         run: |
-          if [ "${{ env.version }}" != "${{ env.prev_version }}" ]; then
+          if [ "${{ env.current_version }}" != "${{ env.prev_version }}" ]; then
             echo "changed=true" >> $GITHUB_ENV
           else
             echo "changed=false" >> $GITHUB_ENV
           fi
+          echo "Version changed: ${{ env.changed }}"
       
       - name: Publish to npm
         if: env.changed == 'true'
@@ -48,9 +53,9 @@ jobs:
         if: env.changed == 'true'
         uses: actions/create-release@v1
         with:
-          tag_name: v${{ env.version }}
-          release_name: Release v${{ env.version }}
-          body: New release v${{ env.version }}
+          tag_name: v${{ env.current_version }}
+          release_name: Release v${{ env.current_version }}
+          body: New release v${{ env.current_version }}
           draft: false
           prerelease: false
         env:
