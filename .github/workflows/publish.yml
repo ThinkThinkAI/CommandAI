@@ -1,0 +1,48 @@
+name: Publish to npm and Create GitHub Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run build (if you have a build step)
+        run: npm run build
+
+      - name: Publish to npm
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Get version from package.json
+        id: get_version
+        run: echo "::set-output name=VERSION::$(node -p -e "require('./package.json').version")"
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.get_version.outputs.VERSION }}
+          release_name: Release ${{ steps.get_version.outputs.VERSION }}
+          body: |
+            ## Changes
+            - Describe your changes here
+          draft: false
+          prerelease: false
