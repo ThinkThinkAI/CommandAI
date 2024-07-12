@@ -220,7 +220,25 @@ npm start
 
 ## 🤝 Contributing
 
-We’d love your help! Fork the repo, make some changes, and send over a pull request.
+We’d love your help! Fork the repo, checkout the `pre-release` branch, make some changes, and send over a pull request. If you want to use the code for your local usage instead of installing it globally, follow these steps:
+
+1. **Clone your forked repo:**
+   ```sh
+   git clone https://github.com/your-username/command-ai.git
+   cd command-ai
+   ```
+2. **Checkout the `pre-release` branch:**
+    ```sh
+    git checkout pre-release
+    ```
+    This branch is where we merge all the new features and bug fixes before they are released.
+3. **Link the project locally:**
+    ```sh
+    npm link
+    ```
+    After these steps, you can use the commands (ai, aic, aiq, etc.) from your local development environment without installing the package globally.
+
+
 
 ## 📜 License
 
