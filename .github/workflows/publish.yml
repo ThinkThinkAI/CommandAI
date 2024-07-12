@@ -21,7 +21,7 @@ jobs:
       
       - name: Get current npm version
         id: current_version
-        run: echo "version=$(node -p 'require(\"./package.json\").version')" >> $GITHUB_ENV
+        run: echo "version=$(node -p 'require(`./package.json`).version')" >> $GITHUB_ENV
       
       - name: Get previous npm version
         id: previous_version
@@ -50,8 +50,7 @@ jobs:
         with:
           tag_name: v${{ env.version }}
           release_name: Release v${{ env.version }}
-          body: |
-            New release v${{ env.version }}
+          body: New release v${{ env.version }}
           draft: false
           prerelease: false
         env:
