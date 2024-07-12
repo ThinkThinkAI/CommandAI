@@ -24,12 +24,12 @@ jobs:
         id: previous_version
         run: |
           PREV_VERSION=$(npm view ${{ github.repository }} version)
-          echo "version=${PREV_VERSION}" >> $GITHUB_ENV
+          echo "prev_version=${PREV_VERSION}" >> $GITHUB_ENV
       
       - name: Check version change
         id: version_check
         run: |
-          if [ "${{ env.version }}" != "${{ env.version }}" ]; then
+          if [ "${{ env.version }}" != "${{ env.prev_version }}" ]; then
             echo "changed=true" >> $GITHUB_ENV
           else
             echo "changed=false" >> $GITHUB_ENV
