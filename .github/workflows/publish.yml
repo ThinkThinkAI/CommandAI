@@ -9,10 +9,47 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      
       - uses: actions/setup-node@v3
         with:
           node-version: "18"
+      
       - run: npm ci
-      - uses: JS-DevTools/npm-publish@v3
+      
+      - name: Get current npm version
+        id: current_version
+        run: echo "::set-output name=version::$(node -p \"require('./package.json').version\")"
+      
+      - name: Get previous npm version
+        id: previous_version
+        run: |
+          PREV_VERSION=$(npm view ${{ github.repository }} version)
+          echo "::set-output name=version::${PREV_VERSION}"
+      
+      - name: Check version change
+        id: version_check
+        run: |
+          if [ "${{ steps.current_version.outputs.version }}" != "${{ steps.previous_version.outputs.version }}" ]; then
+            echo "::set-output name=changed::true"
+          else
+            echo "::set-output name=changed::false"
+          fi
+      
+      - name: Publish to npm
+        if: steps.version_check.outputs.changed == 'true'
+        uses: JS-DevTools/npm-publish@v3
         with:
           token: ${{ secrets.NPM_TOKEN }}
+      
+      - name: Create GitHub Release
+        if: steps.version_check.outputs.changed == 'true'
+        uses: actions/create-release@v1
+        with:
+          tag_name: v${{ steps.current_version.outputs.version }}
+          release_name: Release v${{ steps.current_version.outputs.version }}
+          body: |
+            New release v${{ steps.current_version.outputs.version }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
