@@ -17,12 +17,13 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '18'
+          registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Publish to npm
-        run: npm publish
+        run: npm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
