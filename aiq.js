@@ -50,7 +50,8 @@ async function getConnectionConfig(dbConfigs, nameOrFilePath) {
 
 
 async function generateQuery(command, client, dbAdapter) {
-  if (USE_PROMPT) { const spinner = ora(gradient.cristal("Thinking...")).start(); }
+  let spinner = null;
+  if (USE_PROMPT) { spinner = ora(gradient.cristal("Thinking...")).start(); }
   const queryString = await client.generateQuery(command, dbAdapter);
   if (USE_PROMPT) { spinner.succeed(gradient.cristal("Query generated.")); }
   consoleLog(queryString);
