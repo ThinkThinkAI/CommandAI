@@ -11,7 +11,7 @@
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/fb6299a2ae58c7570afa/maintainability)](https://codeclimate.com/github/CommandAI/ai-cli/maintainability)
 
-[Join our Discord](https://discord.gg/wPsFbpFHVH)
+[Join our Discord](https://discord.gg/bUE6hzdmrh)
 
 Welcome to Command AI, your new AI-powered command-line buddies! These programs makes handling tasks a breeze. Whether you need to automate routine tasks, set up new projects, run background operations, or simply start a chat. Just tell it what you want, and it'll get to work. Check out some cool things it can do:
 
