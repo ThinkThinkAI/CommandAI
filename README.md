@@ -9,9 +9,8 @@
  ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═════╝ ╚═╝  ╚═╝╚═╝
 ```
 
-[![Maintainability](https://api.codeclimate.com/v1/badges/fb6299a2ae58c7570afa/maintainability)](https://codeclimate.com/github/CommandAI/ai-cli/maintainability)
+[![Maintainability](https://api.codeclimate.com/v1/badges/fb6299a2ae58c7570afa/maintainability)](https://codeclimate.com/github/CommandAI/ai-cli/maintainability) ![Discord](https://img.shields.io/discord/1245952504341200957?style=flat&label=Discord)
 
-[Join our Discord](https://discord.gg/bUE6hzdmrh)
 
 
 
