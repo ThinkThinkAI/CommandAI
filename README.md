@@ -9,8 +9,7 @@
  ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═════╝ ╚═╝  ╚═╝╚═╝
 ```
 
-[![Maintainability](https://api.codeclimate.com/v1/badges/fb6299a2ae58c7570afa/maintainability)](https://codeclimate.com/github/CommandAI/ai-cli/maintainability) ![Discord](https://img.shields.io/discord/1245952504341200957?style=flat&label=Discord)
-
+[![Maintainability](https://api.codeclimate.com/v1/badges/fb6299a2ae58c7570afa/maintainability)](https://codeclimate.com/github/CommandAI/ai-cli/maintainability) <a href="https://discord.gg/bUE6hzdmrh" style="float: right;"><img src="https://img.shields.io/discord/1245952504341200957?style=flat&label=Discord"></a>
 
 
 
