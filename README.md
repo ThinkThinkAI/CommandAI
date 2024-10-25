@@ -196,6 +196,17 @@ DB Settings for `aiq` are stored at `~/.commandai/db.json`. You can setup as man
     "config": {
       "filename": "/path/to/sqlite.db"
     }
+  },
+  {
+    "name": "MSSQL_Connection",
+    "type": "mssql",
+    "config": {
+      "user": "mssql_user",
+      "host": "localhost",
+      "database": "mssql_db",
+      "password": "mssql_password",
+      "port": 1433
+    }
   }
 ]
 ```
